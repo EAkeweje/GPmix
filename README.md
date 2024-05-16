@@ -1,5 +1,7 @@
 # GPmix
-Learning Mixtures of Gaussian Processes through Random Projection
+---
+GPmix package is the implementation of an efficient algorithm for clustering functional data using Random Projection, specifically designed to uncover latent cluster labels in data generated from Gaussian process mixtures. Our method exploits the fact that the projection coefficients of the functional data onto any given projection function follow a univariate Gaussian mixture model (GMM). By conducting multiple one-dimensional projections and learning a univariate GMM for each, we create an ensemble of GMMs. Each GMM serves as a base clustering, and applying ensemble clustering yields a consensus clustering. Our approach significantly reduces computational complexity compared to state-of-the-art methods, and we provide theoretical guarantees on the identifiability and learnability of Gaussian process mixtures. Extensive experiments on synthetic and real datasets confirm the superiority of our method over existing techniques.
+
 ## Getting started
 
 This guide will help you understand how to use the package by demonstrating it on the CBF dataset, which is one of the real datasets referenced in our paper. Follow these steps to prepare the dataset for analysis:
