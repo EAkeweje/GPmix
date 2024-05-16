@@ -12,7 +12,7 @@ from sklearn.cluster import SpectralClustering
 from sklearn.metrics import adjusted_mutual_info_score,  adjusted_rand_score, accuracy_score
 from itertools import permutations
 from joblib import Parallel, delayed
-from .misc import gmms_fit_plot_
+from .misc import gmms_fit_plot_, silhouette_score, davies_bouldin_score
 import warnings
 
 
@@ -500,4 +500,10 @@ class UniGaussianMixtureEnsemble():
 
         #return max classification score
         return cca_list[max_ind]
+    
+    def silhouette_score(self, fdata: skfda.FDataGrid):
+        return silhouette_score(fdata, self.labels_)
+    
+    def davies_bouldin_score(self, fdata: skfda.FDataGrid):
+        return davies_bouldin_score(fdata, self.labels_)
 
