@@ -100,7 +100,9 @@ The function returns the estimated number of clusters. This number reflects the 
 ## Replicating Experiment Results
 The simulation scenarios described in our study are implemented in the `simulations.py` file. To reproduce the results from the paper for each specific scenario, you will need to execute the following command:
 
- `python GPmix_Clustering.py data_config/scenario_<tag>_config.yml`
+ ```bash
+ python GPmix_Clustering.py data_config/scenario_<tag>_config.yml
+```
 
 Replace `<tag>` with the appropriate scenario identifier, which ranges from A to L. Each tag corresponds to a different configuration file located in the data_config directory. By executing the command with the relevant tag, the results for that particular scenario will be replicated. 
 
