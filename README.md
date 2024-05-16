@@ -36,7 +36,7 @@ fd.plot(group = y)
 
 ## Projection of sample functions
 
-Use `Projector` object to project the sample functions unto specified (projection) function(s). The `Projector` object needs to be initialized with the type of projection function and the desired number of projections. The `basis_type` is for specifying the type of projection function (basis). Supported `basis_type` are: fourier, bspline, fpc, rl-fpc, Ornstein-Uhlenbeck random functions, and wavelet. Further, Parameter `n_proj` is for number of projections and `basis_params` for further configuration of the projection function. For instance, we use wavelet projection function in this demonstration, and used `basis_params` to specify the family of wavelet we want to use. Apply the `fit`method to the smoothed functions to compute the projection coefficients.
+Use `Projector` object to project the sample functions unto specified (projection) function(s). The `Projector` object needs to be initialized with the type of projection function and the desired number of projections. The `basis_type` is for specifying the type of projection function (basis). Supported `basis_type` are: fourier, bspline, fpc, rl-fpc, Ornstein-Uhlenbeck random functions, and wavelet. Further, Parameter `n_proj` is for number of projections and `basis_params` for further configuration of the projection function. For instance, we use wavelet projection function in this demonstration, and so we use `basis_params` to specify the family of wavelet we want to use. Afterwards, apply the `fit` method to the smoothed functions to compute the projection coefficients.
 
 Here, we use 14 projection functions generated from the Haar wavelet family.
 
@@ -44,8 +44,6 @@ Here, we use 14 projection functions generated from the Haar wavelet family.
 proj = Projector(basis_type= 'wavelet', n_proj = 14, basis_params= {'wv_name': 'haar'})
 coeffs = proj.fit(fd)
 ```
-
-Here's a refined and structured version of the "Ensemble Clustering" section for your README file, designed to guide users through using the `UniGaussianMixtureEnsemble` object more effectively:
 
 ## Ensemble Clustering
 
