@@ -94,7 +94,6 @@ model.davies_bouldin_score(fd)
 To effectively estimate the optimal number of clusters in a dataset, our package includes the estimate_nclusters function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as discussed in our paper. Here is how to apply this function to your data:
 ```python
 estimate_nclusters(fd)
-#4
 ```
 The function returns the estimated number of clusters. This number reflects the optimal balance between model complexity and goodness of fit, according to the AIC or BIC.
 
