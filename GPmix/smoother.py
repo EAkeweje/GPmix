@@ -27,7 +27,7 @@ class Smoother():
         However, for smoothining with wavelet basis, GCV was not implemented, and 
         Example:
                 B-spline basis: {'order': 3, 'n_basis': 20}
-                Wavelet basis: {'wavelet': 'db4', 'n_basis': 20, 'level' : 2}
+                Wavelet basis: {'wavelet': 'db4', 'n_basis': 20, 'mode' : 'soft'}
                 Kernel basis: {'bandwidth': 1.0}
                 Fourier basis: {'n_basis': 20, 'period': 1}
     domain_range : tuple | None. default = None
