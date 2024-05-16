@@ -49,7 +49,7 @@ Here's a refined and structured version of the "Ensemble Clustering" section for
 
 The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitting multiple collections of scalars to Gaussian Mixture Models (GMMs). Each collection is modeled using a univariate GMM, enabling the generation of an ensemble clustering from these models as described in the paper. 
 
-Start by initializing the `UniGaussianMixtureEnsemble` with the number of clusters you wish to identify in your dataset. Use the `fit_gmms` method to fit GMMs to the projection coefficients. After fitting the GMMs, use the `get_clustering` method to generate the consensus clustering. This method aggregates the results from the individual GMMs to form a unified cluster label for each sample.
+Start by initializing the `UniGaussianMixtureEnsemble` with the number of clusters `n_clusters` you wish to identify in your dataset. Use the `fit_gmms` method to fit GMMs to the projection coefficients. After fitting the GMMs, use the `get_clustering` method to generate the consensus clustering. This method aggregates the results from the individual GMMs to form a unified cluster label for each sample.
 
 For this demonstration, there are 3 clusters in the sample dataset:
 ```python
