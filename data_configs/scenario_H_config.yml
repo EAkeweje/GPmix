@@ -1,0 +1,10 @@
+dataset: H
+smoother basis: bspline
+smoother basis param:
+  n_basis: 10
+  order: 10
+projector basis: fourier
+n proj: 2
+projector basis param:
+  order: Null
+gmm init method: kmeans

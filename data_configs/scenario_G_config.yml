@@ -1,0 +1,10 @@
+dataset: G
+smoother basis: bspline
+smoother basis param:
+  n_basis: 10
+  order: 10
+projector basis: rl-fpc
+n proj: 16
+projector basis param:
+  order: Null
+gmm init method: k-means++

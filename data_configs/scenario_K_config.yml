@@ -1,0 +1,10 @@
+dataset: K
+smoother basis: fourier
+smoother basis param:
+  n_basis: 30
+projector basis: wavelet
+n proj: 8
+projector basis param:
+  wv_name: rbio6.8
+  resolution: 4
+gmm init method: k-means++

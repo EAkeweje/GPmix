@@ -1,0 +1,10 @@
+dataset: B
+smoother basis: bspline
+smoother basis param:
+  n_basis: 30
+projector basis: wavelet
+n proj: 2
+projector basis param:
+  wv_name: rbio1.3
+  resolution: 2
+gmm init method: k-means++

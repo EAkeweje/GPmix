@@ -1,0 +1,11 @@
+dataset: E
+smoother basis: bspline
+smoother basis param:
+  n_basis: 10
+  order: 5
+projector basis: fpc
+n proj: 2
+projector basis param:
+  wv_name: Null
+  resolution: Null
+gmm init method: kmeans

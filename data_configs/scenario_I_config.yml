@@ -1,0 +1,10 @@
+dataset: I
+smoother basis: bspline
+smoother basis param:
+  n_basis: 10
+  order: 10
+projector basis: wavelet
+n proj: 64
+projector basis param:
+  wv_name: haar
+gmm init method: k-means++

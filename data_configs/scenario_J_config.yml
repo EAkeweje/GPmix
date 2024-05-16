@@ -1,0 +1,10 @@
+dataset: J
+smoother basis: bspline
+smoother basis param:
+  n_basis: 10
+  order: 10
+projector basis: bspline
+n proj: 16
+projector basis param:
+  order: 3
+gmm init method: kmeans

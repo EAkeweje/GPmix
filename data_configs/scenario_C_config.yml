@@ -1,0 +1,11 @@
+dataset: C
+smoother basis: bspline
+smoother basis param:
+  n_basis: 20
+  order: 10
+projector basis: wavelet
+n proj: 32
+projector basis param:
+  wv_name: bior6.8
+  resolution: 1
+gmm init method: k-means++
