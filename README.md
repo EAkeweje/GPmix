@@ -91,14 +91,14 @@ model.davies_bouldin_score(fd)
 ```
 
 ## Estimating the Number of clusters
-To effectively estimate the optimal number of clusters in a dataset, our package includes the estimate_nclusters function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as discussed in our paper. Here is how to apply this function to your data:
+To effectively estimate the optimal number of clusters in a dataset, our package includes the `estimate_nclusters function`. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as discussed in our paper. Here is how to apply this function to your data:
 ```python
 estimate_nclusters(fd)
 ```
-The function returns the estimated number of clusters. This number reflects the optimal balance between model complexity and goodness of fit, according to the AIC or BIC.
+The function returns the estimated number of clusters.
 
 # Replicating Experiment Results
-The simulation scenarios described in our study are implemented in the `simulations.py` file. To reproduce the results from the paper for each specific scenario, you will need to execute the following command after cloning the repo:
+The simulation scenarios described in our study are available in `simulations.py` file. To reproduce the results from the paper for each specific scenario, you will need to execute the following command after cloning the repo:
 
  ```bash
  python GPmix_Clustering.py data_config/scenario_<tag>_config.yml
