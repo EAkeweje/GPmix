@@ -9,7 +9,7 @@ from math import comb, factorial, log, floor
 from cmath import log as clog
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import SpectralClustering
-from sklearn.metrics import adjusted_mutual_info_score,  adjusted_rand_score, accuracy_score
+from sklearn.metrics import adjusted_mutual_info_score as ami,  adjusted_rand_score as ari, accuracy_score
 from itertools import permutations
 from joblib import Parallel, delayed
 from .misc import gmms_fit_plot_, silhouette_score, davies_bouldin_score
@@ -473,11 +473,11 @@ class UniGaussianMixtureEnsemble():
     def plot_clustering(self, fdata: skfda.FDataGrid):
         fdata.plot(group = self.labels_)
 
-    def adjusted_mutual_info_score_(self, true_labels) -> float:
-        return adjusted_mutual_info_score(self.labels_, true_labels)
+    def adjusted_mutual_info_score(self, true_labels) -> float:
+        return ami(self.labels_, true_labels)
 
-    def adjusted_rand_score_(self, true_labels) -> float:
-        return adjusted_rand_score(self.labels_, true_labels)
+    def adjusted_rand_score(self, true_labels) -> float:
+        return ari(self.labels_, true_labels)
 
     def correct_classification_accuracy(self, true_labels) -> float:
         true_classes = np.unique(true_labels)
