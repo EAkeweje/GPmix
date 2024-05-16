@@ -1,5 +1,5 @@
 # GPmix
-
+Learning Mixtures of Gaussian Processes through Random Projection
 ## Getting started
 
 This guide will help you understand how to use the package by demonstrating it on the CBF dataset, which is one of the real datasets referenced in our paper. Follow these steps to prepare the dataset for analysis:
