@@ -43,8 +43,8 @@ print('##### GPmix performance ######',
     '\nARI: ', model.adjusted_rand_score(y),
       '\nAMI: ', model.adjusted_mutual_info_score(y),
       '\nCCA:', model.correct_classification_accuracy(y),
-      '\nSIL: ', silhouette_score(fdata_smoothed, pred_labels),
-      '\nDB: ', davies_bouldin_score(fdata_smoothed, pred_labels))
+      '\nSIL: ', model.silhouette_score(fdata_smoothed),
+      '\nDB: ', model.davies_bouldin_score(fdata_smoothed))
 
 #visualize clusters
 fdata_smoothed.plot(group = pred_labels)
