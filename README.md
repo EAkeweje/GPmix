@@ -57,9 +57,9 @@ model = UniGaussianMixtureEnsemble(n_clusters= 3)
 model.fit_gmms(coeffs)
 pred_labels = model.get_clustering()
 ```
-To visualize the clustering, apply the smoothed data's `plot` method with `group = pred_labels`:
+To visualize the clustering, apply the `plot_clustering` method to the sample dataset:
 ```python
-fd.plot(group = pred_labels)
+model.plot_clustering(fd)
 ```
 ![](cbf_clustering.png)
 
