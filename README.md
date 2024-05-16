@@ -45,7 +45,7 @@ coeffs = proj.fit(fd)
 
 Here's a refined and structured version of the "Ensemble Clustering" section for your README file, designed to guide users through using the `UniGaussianMixtureEnsemble` object more effectively:
 
-## Ensemble Clustering
+### Ensemble Clustering
 
 The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitting multiple collections of scalars to Gaussian Mixture Models (GMMs). Each collection is modeled using a univariate GMM, enabling the generation of an ensemble clustering from these models as described in the paper. 
 
@@ -57,8 +57,13 @@ model = UniGaussianMixtureEnsemble(n_clusters= 3)
 model.fit_gmms(coeffs)
 pred_labels = model.get_clustering()
 ```
+To visualize the clustering, apply the smoothed data's `plot` method with `group = pred_labels`:
+```python
+fd.plot(group = pred_labels)
+```
+![](cbf_clustering.png)
 
-Furthermore, `UniGaussianMixtureEnsemble` object supports several methods for both internal and external validation of cluster quality. These metrics help evaluate the effectiveness of the clustering process by comparing the generated clusters against true labels or by assessing the internal structure of the clusters. Below are descriptions of each metric and how to apply them:
+Furthermore, `UniGaussianMixtureEnsemble` object supports several methods for both internal and external validation of cluster quality. These metrics help evaluate the effectiveness of the clustering process by comparing the generated clusters against true labels or by assessing the internal structure of the clusters. Below is how to apply the metrics:
 
 1. Adjusted Mutual Information: Pass true labels as parameters.
 ```python
@@ -85,6 +90,13 @@ model.silhouette_score(fd)
 model.davies_bouldin_score(fd)
 ```
 
+### Estimating the Number of clusters
+To effectively estimate the optimal number of clusters in a dataset, our package includes the estimate_nclusters function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as discussed in our paper. Here is how to apply this function to your data:
+```python
+estimate_nclusters(fd)
+#4
+```
+The function returns the estimated number of clusters. This number reflects the optimal balance between model complexity and goodness of fit, according to the AIC or BIC.
 
 ## Replicating Experiment Results
 The simulation scenarios described in our study are implemented in the `simulations.py` file. To reproduce the results from the paper for each specific scenario, you will need to execute the following command:

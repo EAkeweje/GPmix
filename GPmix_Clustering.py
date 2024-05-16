@@ -40,8 +40,8 @@ model.fit_gmms(coefficients)
 pred_labels = model.get_clustering()
 
 print('##### GPmix performance ######',
-    '\nARI: ', model.adjusted_rand_score_(y),
-      '\nAMI: ', model.adjusted_mutual_info_score_(y),
+    '\nARI: ', model.adjusted_rand_score(y),
+      '\nAMI: ', model.adjusted_mutual_info_score(y),
       '\nCCA:', model.correct_classification_accuracy(y),
       '\nSIL: ', silhouette_score(fdata_smoothed, pred_labels),
       '\nDB: ', davies_bouldin_score(fdata_smoothed, pred_labels))
