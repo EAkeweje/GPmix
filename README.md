@@ -1,10 +1,10 @@
 # About GPmix
 ---
-GPmix package is the implementation of an efficient algorithm for clustering functional data using Random Projection, specifically designed to uncover latent cluster labels in data generated from Gaussian process mixtures. Our method exploits the fact that the projection coefficients of the functional data onto any given projection function follow a univariate Gaussian mixture model (GMM). By conducting multiple one-dimensional projections and learning a univariate GMM for each, we create an ensemble of GMMs. Each GMM serves as a base clustering, and applying ensemble clustering yields a consensus clustering. Our approach significantly reduces computational complexity compared to state-of-the-art methods, and we provide theoretical guarantees on the identifiability and learnability of Gaussian process mixtures. Extensive experiments on synthetic and real datasets confirm the superiority of our method over existing techniques.
+[GPmix](GPmix) is the implementation of an efficient algorithm for clustering functional data using Random Projection, specifically designed to uncover latent cluster labels in data generated from Gaussian process mixtures. Our method exploits the fact that the projection coefficients of the functional data onto any given projection function follow a univariate Gaussian mixture model (GMM). By conducting multiple one-dimensional projections and learning a univariate GMM for each, we create an ensemble of GMMs. Each GMM serves as a base clustering, and applying ensemble clustering yields a consensus clustering. Our approach significantly reduces computational complexity compared to state-of-the-art methods, and we provide theoretical guarantees on the identifiability and learnability of Gaussian process mixtures. Extensive experiments on synthetic and real datasets confirm the superiority of our method over existing techniques.
 
 # Getting started
 
-This guide will help you understand how to use the package by demonstrating it on the CBF dataset, which is one of the real datasets referenced in our paper. Follow these steps to prepare the dataset for analysis:
+This guide will help you understand how to use the package by demonstrating it on the [CBF](CBF) dataset, which is one of the real datasets referenced in our paper. Follow these steps to prepare the dataset for analysis:
 
 ```python
 import numpy as np
@@ -91,18 +91,18 @@ model.davies_bouldin_score(fd)
 ```
 
 ## Estimating the Number of clusters
-To effectively estimate the optimal number of clusters in a dataset, our package includes the `estimate_nclusters function`. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as discussed in our paper. Here is how to apply this function to your data:
+To effectively estimate the optimal number of clusters in a dataset, our package includes the `estimate_nclusters` function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as discussed in our paper. Here is how to apply this function to your data:
 ```python
 estimate_nclusters(fd)
 ```
 The function returns the estimated number of clusters.
 
 # Replicating Experiment Results
-The simulation scenarios described in our study are available in `simulations.py` file. To reproduce the results from the paper for each specific scenario, you will need to execute the following command after cloning the repo:
+The simulation scenarios described in our study are available in [simulations.py](simulations.py). To reproduce the results from the paper for each specific scenario, you will need to execute the following command after cloning the repo:
 
  ```bash
- python GPmix_Clustering.py data_config/scenario_<tag>_config.yml
+ python GPmix_Clustering.py data_configs/scenario_<tag>_config.yml
 ```
 
-Replace `<tag>` with the appropriate scenario identifier, which ranges from A to L. Each tag corresponds to a different configuration file located in the data_config directory. By executing the command with the relevant tag, the results for that particular scenario will be replicated. 
+Replace `<tag>` with the appropriate scenario identifier, which ranges from A to L. Each tag corresponds to a different configuration file located in the [data_configs](data_configs). By executing the command with the relevant tag, the results for that particular scenario will be replicated. 
 
