@@ -1,6 +1,27 @@
 # About GPmix
 
-[GPmix](GPmix) is the implementation of an efficient algorithm for clustering functional data using Random Projection, specifically designed to uncover latent cluster labels in data generated from Gaussian process mixtures. Our method exploits the fact that the projection coefficients of the functional data onto any given projection function follow a univariate Gaussian mixture model (GMM). By conducting multiple one-dimensional projections and learning a univariate GMM for each, we create an ensemble of GMMs. Each GMM serves as a base clustering, and applying ensemble clustering yields a consensus clustering. Our approach significantly reduces computational complexity compared to state-of-the-art methods, and we provide theoretical guarantees on the identifiability and learnability of Gaussian process mixtures. Extensive experiments on synthetic and real datasets confirm the superiority of our method over existing techniques.
+[GPmix](GPmix) is a clustering algorithm for functional data that are generated from Gaussian process mixtures. The main steps of the algorithm are:
+
+<ul>
+ <li>Smoothing: Apply smoothing methods on the raw data to get continuous functions.</li>
+ <li>Projection: Project the functional data onto a few randomly generated functions.</li>
+ <li>Learning GMMs: For each projection function, learn a univariate Gaussian mixture model from the projection coefficients.</li>
+ <li>Ensemble: Extract a consensus clustering from the multiple GMMs.</li>
+</ul>
+
+Although designed for Gaussian process mixtures, our experimental study demonstrated that GPmix works well even for functional data that are not from Gaussian process mixtures. If you used this package in your research, please cite it:
+```latex
+@INPROCEEDINGS{EA2024ICML,
+author =       {Emmanuel Akeweje and Mimi Zhang},
+title =        {Learning mixtures of {Gaussian} processes through random projection},
+booktitle =    {41st International Conference on Machine Learning (ICML)},
+year =         {2024},
+volume =       {},
+number =       {},
+pages = {},
+doi = {},
+}
+```
 
 # Getting Started
 
