@@ -11,15 +11,17 @@
 
 Although designed for Gaussian process mixtures, our experimental study demonstrated that GPmix works well even for functional data that are not from Gaussian process mixtures. If you used this package in your research, please cite it:
 ```latex
-@INPROCEEDINGS{EA2024ICML,
-author =       {Emmanuel Akeweje and Mimi Zhang},
-title =        {Learning mixtures of {Gaussian} processes through random projection},
-booktitle =    {41st International Conference on Machine Learning (ICML)},
-year =         {2024},
-volume =       {},
-number =       {},
-pages = {},
-doi = {},
+@InProceedings{pmlr-AK2024,
+  title =        {Learning mixtures of {Gaussian} processes through random projection},
+  author =       {Akeweje, Emmanuel and Zhang, Mimi},
+  booktitle = 	 {Proceedings of the 41st International Conference on Machine Learning},
+  pages = 	 {},
+  year = 	 {2024},
+  editor = 	 {},
+  volume = 	 {},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {21--27 Jul},
+  publisher =    {PMLR},
 }
 ```
 
