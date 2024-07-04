@@ -9,6 +9,8 @@
  <li>Ensemble: Extract a consensus clustering from the multiple GMMs.</li>
 </ul>
 
+![](projection_illustration.png)
+
 Although designed for Gaussian process mixtures, our experimental study demonstrated that GPmix works well even for functional data that are not from Gaussian process mixtures. If you used this package in your research, please cite it:
 ```latex
 @InProceedings{pmlr-AK2024,
