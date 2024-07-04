@@ -31,6 +31,8 @@ If you used this package in your research, please cite it:
 }
 ```
 
+**This project is under active development. If you find a bug, or anything that needs correction, please let us know.** 
+
 # Getting Started
 
 This guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
