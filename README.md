@@ -1,6 +1,9 @@
 # About GPmix
 
-[GPmix](GPmix) is a clustering algorithm for functional data that are generated from Gaussian process mixtures. The main steps of the algorithm are:
+[GPmix](GPmix) is a clustering algorithm for functional data that are generated from Gaussian process mixtures. Although designed for Gaussian process mixtures, our experimental study demonstrated that GPmix works well even for functional data that are not from Gaussian process mixtures. The key idea is projecting onto one dimension: 
+![](projection_illustration.png)
+
+The main steps of the algorithm are:
 
 <ul>
  <li>Smoothing: Apply smoothing methods on the raw data to get continuous functions.</li>
@@ -9,9 +12,7 @@
  <li>Ensemble: Extract a consensus clustering from the multiple GMMs.</li>
 </ul>
 
-![](projection_illustration.png)
-
-Although designed for Gaussian process mixtures, our experimental study demonstrated that GPmix works well even for functional data that are not from Gaussian process mixtures. If you used this package in your research, please cite it:
+If you used this package in your research, please cite it:
 ```latex
 @InProceedings{pmlr-AK2024,
   title =        {Learning mixtures of {Gaussian} processes through random projection},
