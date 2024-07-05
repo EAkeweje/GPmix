@@ -31,7 +31,6 @@ If you used this package in your research, please cite it:
 }
 ```
 
-**This project is under active development. If you find a bug, or anything that needs correction, please let us know.** 
 
 # Getting Started
 
@@ -131,3 +130,10 @@ The simulation scenarios investigated in our paper are available in [simulations
 
 Replace `<tag>` with the appropriate scenario identifier, which ranges from A to L. Each tag corresponds to a different configuration file located in the [data_configs](data_configs). By executing the command with the relevant tag, the results for that particular scenario will be replicated. 
 
+
+
+# Contributing
+
+**This project is under active development. If you find a bug, or anything that needs correction, please let us know.** 
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
