@@ -51,7 +51,30 @@ from GPmix.misc import estimate_nclusters
 
 ## Smoothing
 
-To smooth the sample curves, use the `Smoother` object. Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. The supported basis options include Fourier, B-spline, and wavelet basis. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` object to your data to smooth it.
+To smooth the sample curves, use the `Smoother` object: Smoother(basis = 'bspline', basis_param = {}, domain_range = None).
+
+**Parameters**
+- basis : str, default = 'bspline'.<br> Smoothing basis. Supports 'bspline', 'fourier', 'wavelet', 'nadaraya_watson', and 'knn'.
+- basis_params : dict, default = { }.<br>
+    Additional parameters for smoothing basis. By default, except for wavelet basis, the required parameters are selected via generalized cross-validation (GCV) technique.
+    Example: <br>
+    ```
+    B-spline basis: {'order': 3, 'n_basis': 20}
+    Wavelet basis: {'wavelet': 'db4', 'n_basis': 20, 'mode' : 'soft'}
+    Kernel basis: {'bandwidth': 1.0}
+    Fourier basis: {'n_basis': 20, 'period': 1}
+    ```
+- domain_range : tuple | None. default = None. <br>
+    The domain range of the functional data. For domain_range = None, the domain range is either set to [0,1]  if data is array-like, 
+    or set to the domain_range of the data if data is FDataGrid object.
+
+**Methods**
+- fit(X) :
+    Construct smoothed functions from raw data X.
+- plot :
+
+
+Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. The supported basis options include Fourier, B-spline, and wavelet basis. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` object to your data to smooth it.
 
 For this demonstration, we will use the Fourier basis.
 
