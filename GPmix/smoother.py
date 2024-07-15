@@ -229,6 +229,6 @@ class Smoother():
             return self.fd_smooth
 
     
-    def plot(self, **kwarg):
-        self.fd_smooth.plot(**kwarg)
+    # def plot(self, **kwarg):
+    #     self.fd_smooth.plot(**kwarg)
  
