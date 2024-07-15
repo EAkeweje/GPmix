@@ -51,21 +51,24 @@ from GPmix.misc import estimate_nclusters
 
 ## Smoothing
 
-To smooth the sample curves, use the `Smoother` object: Smoother(basis = 'bspline', basis_param = {}, domain_range = None).
-
-**Parameters**
-- basis : str, default = 'bspline'.<br> Smoothing basis. Supports 'bspline', 'fourier', 'wavelet', 'nadaraya_watson', and 'knn'.
-- basis_params : dict, default = { }.<br>
-    Additional parameters for smoothing basis. By default, except for wavelet basis, the required parameters are selected via generalized cross-validation (GCV) technique.
+To smooth the sample curves, use the `Smoother` object: 
+```python
+Smoother(basis = 'bspline', basis_param = {}, domain_range = None)
+```
+- <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. default = 'bspline'. 
+- <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method. default = { }.  <br>
     Example: <br>
     ```
-    B-spline basis: {'order': 3, 'n_basis': 20}
-    Wavelet basis: {'wavelet': 'db4', 'n_basis': 20, 'mode' : 'soft'}
-    Kernel basis: {'bandwidth': 1.0}
-    Fourier basis: {'n_basis': 20, 'period': 1}
+    'bspline': {'order': 3, 'n_basis': 20}
+    'wavelet': {'wavelet': 'db4', 'n_basis': 20, 'mode' : 'soft'}
+    'knn': {'bandwidth': 1.0}
+    'fourier': {'n_basis': 20, 'period': 1}
     ```
-- domain_range : tuple | None. default = None. <br>
-    The domain range of the functional data. For domain_range = None, the domain range is either set to [0,1]  if data is array-like, 
+    If default = { }, the required parameters are selected via the generalized cross-validation (GCV) technique.<br>
+    For wavelets, ...
+  
+- <strong> domain_range (tuple) </strong>: the domain of the functions. default = None. <br>
+    If domain_range = None, the domain range is either set to [0,1]  if data is array-like, 
     or set to the domain_range of the data if data is FDataGrid object.
 
 **Methods**
