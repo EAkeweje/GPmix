@@ -60,21 +60,25 @@ Smoother(basis = 'bspline', basis_param = {}, domain_range = None)
     Example: <br>
     ```
     'bspline': {'order': 3, 'n_basis': 20}
-    'wavelet': {'wavelet': 'db4', 'n_basis': 20, 'mode' : 'soft'}
+    'wavelet': {'wavelet': 'db5', 'mode': 'soft'}
     'knn': {'bandwidth': 1.0}
     'fourier': {'n_basis': 20, 'period': 1}
     ```
     If default = { }, the required parameters are selected via the generalized cross-validation (GCV) technique.<br>
-    For wavelets, ...
+    For wavelets, the wavelet shrinkage denoising technique is implemented. This requires two parameters: the wavelet name and the denoising mode. The wavelet name, `wavelet`, determines the type of wavelet to use for the transformation (e.g., 'db1', 'sym5').  Denoising mode, `mode` defines the method and extent of denoising. The avaiable modes are: 'soft', 'hard', 'garrote', 'greater' and 'less'. If these parameters are not specified, the default values `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
   
 - <strong> domain_range (tuple) </strong>: the domain of the functions. default = None. <br>
     If domain_range = None, the domain range is either set to [0,1]  if data is array-like, 
     or set to the domain_range of the data if data is FDataGrid object.
 
+**Attribute**
+- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained from smoothing given raw data.
+
 **Methods**
-- fit(X) :
-    Construct smoothed functions from raw data X.
-- plot :
+- `fit(X, return_data = True)`: Construct smooth functions from given raw data. <br>  
+  - <strong> X (array-like of shape (n_samples, n_features) or FDataGrid object) </strong>: raw (sample) data.
+  - <strong> return_data (bool) </strong>: returns smooth data if True. default = True
+  
 
 
 Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. The supported basis options include Fourier, B-spline, and wavelet basis. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` object to your data to smooth it.
@@ -90,6 +94,31 @@ fd.plot(group = y)
 
 ## Projection
 
+Transform functional data to a set of univariate data by projection onto specified projection functions.
+```python
+Projector(basis_type, n_proj = 3, basis_params = {})
+```
+- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported projection functions include those generated from Fourier basis, eigen-functions, wavelets, B-spline basis, Ornstein-Uhlenbeck process and random linear combinations of eigen-functions.
+- <strong> n_proj (int) </strong>: Number of projection functions to use, determining the number of univariate data batches to compute. default = 3.
+- <strong> basis_param (dict) </strong>: additional hyperparameters required by some of the projection functions. default = { }. <br>
+For the following projection functions, specify the following parameters:
+  - Fourier Basis: `period`
+  - B-spline: `order`
+  - Wavelet Basis: `wv_name` (wavelet name) and `resolution` (base wavelet resolution)<br>
+
+**Attributes** <br>
+- <strong> n_features (int) </strong>: Number of observed points for each sample curve and for the projection functions.
+- <strong> basis (FDataGrid) </strong>: generated projection functions.
+- <strong> coefficients (array-like of shape (n_proj, N) where N is sample size) </strong>: projection coefficients.
+
+**Methods** <br>
+- `fit(fdata)` : Compute projection coefficients.
+   - <strong> fdata (FDataGrid) </strong>: smooth functional data.<br>
+**Returns**<br>
+array-like object of shape (n_proj, N) where N is sample size.
+- `plot_basis()` : Plot projection functions.
+- `plot_projection_coeffs(**kwargs)` : Visualize the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
+
 To project the sample functions onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (fPC), random linear combinations of eigen-functions (rl-fPC), B-splines, Fourier basis, discrete wavelets, and Ornstein-Uhlenbeck (OU) random functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
 
 For this demonstration, we will use wavelets as projection functions. We will specify the family of wavelets using `basis_params`. After initializing, apply the `fit` function to the smoothed functions to compute the projection coefficients. Here, we will use 14 projection functions generated from the Haar wavelet family.
@@ -101,8 +130,41 @@ coeffs = proj.fit(fd)
 
 ## Ensemble Clustering
 
-The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitting a univariate Gaussian Mixture Model (GMM) to each set of projection coefficients. Follow these steps:
+The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitting a univariate Gaussian Mixture Model (GMM) to each set of projection coefficients. 
 
+```python
+UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10)
+```
+- <strong> n_clusters (int) </strong>: Specifying number of components in the mixture model.
+- <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: Method for initializing the parameters of the GMMs. default = 'kmeans'.
+- <strong> n_init (int) </strong>: The number of initializations to perform; returns the best fits. default = 10.
+- <strong> mom_epsilon (float) </strong>: Only applicable if 'init_method' set to 'mom'. Sets lower bound for GMM weights. default = 5e-2.
+    
+**Attributes**<br>
+- <strong> n_projs (int) </strong>: Number of base clusterings (or projections).
+- <strong> data_size (int) </strong>: Sample size.
+- <strong> gmms (list) </strong> : a list of univariate GMMs fitted for each set of projection coefficients.
+- <strong> clustering_weights_ (array-like of shape (n_projs,)) </strong>: Weights for each of the base clusterings.
+
+**Methods**<br>
+- `fit_gmms(projs_coeffs,  n_jobs = -1, **kwargs)`: fits projection coefficients to univariate Gaussian mixture models.
+  - <strong> projs_coeffs (array-like of shape (n_proj, N) where N is sample size) </strong> : projection coefficients.
+  - <strong> n_jobs </strong>: number of concurrently running jobs to parrallelize fitting the gmms. default = -1 tries to use all available CPUs.
+  - <strong> kwargs </strong>: any keyword argument of `joblib.Parallel`.
+-  `plot_gmms(ncol = 4, fontsize = 12, fig_kws = { }, **kwargs)`: visualization of GMM fits.
+   - <strong> ncol (int) </strong>: number of subplot columns. default = 4.
+   - <strong> fontsize (int) </strong>: set fontsize for plot labels.
+   - <strong> fig_kws </strong>: any keyword argument for the figures (subplots).
+   - <strong> kwargs </strong>: other keyword arguments for customizing seaborn `histplot`.
+- `get_clustering(weighted_sum = True, precompute_gmms = None)`: to obtain consensus clustering from bases the GMMs.
+   - <strong> weighted_sum (bool) </strong>: ... default = True.
+   - <strong> precompute_gmms (list) </strong>: A list of fitted univariate GMMs. By default, the method constructs the consensus clustering using the results from `fit_gmms` however, users may occassionally want to construct the concensus clustering from a subset of the fitted GMMs. This parameter allows for such flexibility.
+   **Returns**
+    array-like object of shape (N,) where N is sample size. The cluster labels for each sample curve.
+- `plot_clustering(fdata)` : visualize clustering.
+    - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
+
+Follow these steps:
 - Initialize the `UniGaussianMixtureEnsemble` object by specifying the number of clusters (`n_clusters`) you want to identify in your dataset.
 - Use the `fit_gmms` method to obtain a collection of GMMs, one for each set of projection coefficients.
 - Use the `get_clustering` object, which aggregates the results from the individual GMMs to form a consensus clustering.
