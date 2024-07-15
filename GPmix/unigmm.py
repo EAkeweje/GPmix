@@ -190,9 +190,6 @@ class UniGaussianMixtureEnsemble():
             If 'init_method' set to 'mom', the tuple of comprehensive report of MoM solver outcome.
         clustering_weights_ : array-like of shape (n_projs,)
             The weight of base clusterings
-        
-        membership_indicator_matrix (ndarray): A binary membership indicator matrix that indicates the cluster membership of each data point.
-        cluster_membership (ndarray): An array of cluster membership values that indicates the cluster membership of each data point.
     """
 
     def __init__(self, n_clusters: int, init_method: str = 'kmeans', n_init: int = 10, mom_epsilon: float = 5e-2) -> None:
