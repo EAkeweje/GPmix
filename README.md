@@ -33,7 +33,9 @@ If you used this package in your research, please cite it:
 
 
 # Package Functions
+
 ##  `GPmix.Smoother`
+
 Apply smoothing methods on the raw data to get continuous functions.
 ```python
 Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
@@ -41,42 +43,44 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
 **Parameter Details**
 - <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. The default value is `'bspline'`. 
 - <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method.  The default value is `{}`.  Below are examples of how to specify these parameters for different smoothing methods:
-    ```
+    ```python
     Smoother(basis = 'bspline', basis_params = {'order': 3, 'n_basis': 20})
     Smoother(basis = 'wavelet', basis_params = {'wavelet': 'db5', 'mode': 'soft'}) 
     Smoother(basis = 'knn', basis_params = {'bandwidth': 1.0})
     Smoother(basis = 'fourier', basis_params = {'n_basis': 20, 'period': 1})
     ```
-    For all smoothing methods except wavelet, if `basis_params` is not specified, the parameters are selected via the Generalized Cross-Validation (GCV) technique.<br>
+    For all smoothing methods except wavelet smoothing, if `basis_params` is not specified, the parameter values are determined by the Generalized Cross-Validation (GCV) technique.<br>
     For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
-    - `'wavelet'`: The type of wavelet to use for the transformation. The available wavelet families are: {...} .
+    - `'wavelet'`: The wavelet family to use for the transformation. The available wavelet families are: {...} .
     - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
    
-   If `basis_params` is not specified for wavelet smoothing, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
+   For wavelet smoothing, if `basis_params` is not specified, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
 - <strong> domain_range (tuple) </strong>: the domain of the functions. The default value is `None`. <br>
-    If `domain_range = None`, the domain range is either set to [0,1]  if data is array-like, 
-    or set to the domain_range of the data if data is FDataGrid object.
+  If `domain_range` is set to `None`, the domain range will default to `[0,1]` if the data is array-like. If the data is an `FDataGrid` object, it will use the `domain_range` of that object.
 
 **Attributes**
-- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained from smoothing the given raw data.
+- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained via the smoothing technique.
 
 **Methods**
-- `fit(X, return_data = True)`: Construct smooth functions from the given raw data. <br>  
-  - <strong> X (array-like of shape (n_samples, n_features) or FDataGrid object) </strong>: raw (sample) data.
-  - <strong> return_data (bool) </strong>: returns smooth data if True. default = True
+- `fit(X, return_data = True)`: Apply a smoothing method to the raw data `X`. <br>  
+  - <strong> X </strong>: raw data, array-like of shape (n_samples, n_features) or FDataGrid object.
+  - <strong> return_data (bool) </strong>: Return the functional data if True. The default value is `True`.
 
 ##  `GPmix.Projector`
+
 Project the functional data onto a few randomly generated functions.
 ```python
 Projector(basis_type, n_proj = 3, basis_params = {})
 ```
-- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported projection functions include those generated from Fourier basis, eigen-functions, wavelets, B-spline basis, Ornstein-Uhlenbeck process and random linear combinations of eigen-functions.
-- <strong> n_proj (int) </strong>: Number of projection functions to use, determining the number of univariate data batches to compute. default = 3.
-- <strong> basis_param (dict) </strong>: additional hyperparameters required by some of the projection functions. default = { }. <br>
-For the following projection functions, specify the following parameters:
-  - Fourier Basis: `period`
-  - B-spline: `order`
-  - Wavelet Basis: `wv_name` (wavelet name) and `resolution` (base wavelet resolution)<br>
+**Parameter Details**
+- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, discrete wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
+- <strong> n_proj (int) </strong>: number of projection functions to use. The default value is `3`.
+- <strong> basis_params (dict) </strong>: additional hyperparameters required by some of the projection functions. The default value is `{}`. Below are examples of how to specify these parameters for different types of projection:
+    ```python
+    Projector(basis_type = 'fourier', basis_params = {'period': 3})
+    Projector(basis_type = 'bspline', basis_params = {'order': 3}) 
+    Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 5})
+    ```
 
 **Attributes** <br>
 - <strong> n_features (int) </strong>: number of observed points for each sample curve and for the projection functions.
@@ -86,16 +90,19 @@ For the following projection functions, specify the following parameters:
 **Methods** <br>
 - `fit(fdata)` : computes projection coefficients.
    - <strong> fdata (FDataGrid) </strong>: smooth functional data.<br>
+
 **Returns**<br>
 array-like object of shape (n_proj, sample size).
 - `plot_basis()` : plots the projection functions.
 - `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
 
 ##  `GPmix.UniGaussianMixtureEnsemble`
+
 For each projection function, learn a univariate Gaussian mixture model from the projection coefficients. Then extract a consensus clustering from the multiple GMMs.
 ```python
 UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_epsilon = 5e-2)
 ```
+**Parameter Details**
 - <strong> n_clusters (int) </strong>: specifying number of components in the mixture model.
 - <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: method for initializing the parameters of the GMMs. default = 'kmeans'.
 - <strong> n_init (int) </strong>: the number of initializations to perform; returns the best fits. default = 10.
@@ -120,7 +127,8 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
 - `get_clustering(weighted_sum = True, precompute_gmms = None)`: to obtain consensus clustering from bases the GMMs.
    - <strong> weighted_sum (bool) </strong>: specifies whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. default = True.
    - <strong> precompute_gmms (list) </strong>: a list of fitted univariate GMMs. By default, the method constructs the consensus clustering using the results from `fit_gmms`, however, users may occassionally want to construct the concensus clustering from a subset of the fitted GMMs. This parameter allows for such flexibility.
-   **Returns**
+
+**Returns**
     array-like object of shape (sample size,). The cluster labels for each sample curve.
 - `plot_clustering(fdata)` : visualize clustering.
     - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
@@ -136,17 +144,19 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
     - <strong> fdata (FDataGrid) </strong> : the sample (functional) data.
  
  ## `GPmix.misc.estimate_nclusters`
+ 
  Applies a technique based on the GPmix algorithm to estimate the optimal number of clusters in a dataset.
  ```python
 estimate_nclusters(fdata, ncluster_grid = None)
 ```
+**Parameter Details**
 - <strong> fdata (FDataGrid) </strong>: sample functional dataset.
 - <strong> ncluster_grid (array-like) </strong>: specifies the grid within which the number of clusters is searched. default = [2, 3, ..., 14]. <br>
 
 **Returns**<br>
     <strong> n_clusters (int) </strong>: estimated number of clusters in the sample functional dataset.
   
-# Getting Started
+# Code Example
 
 This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
 
@@ -164,10 +174,7 @@ from GPmix.misc import estimate_nclusters
 ```
 
 ## Smoothing
-
-
-
-Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. The supported basis options include Fourier, B-spline, and wavelet basis. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` method to your data to smooth it.
+Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` method to your data to smooth it.
 
 For this demonstration, we will use the Fourier basis.
 
@@ -179,7 +186,7 @@ fd.plot(group = y)
 ![](cbf_smooth.png)
 
 ## Projection
-To project the sample functions onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (fPC), random linear combinations of eigen-functions (rl-fPC), B-splines, Fourier basis, discrete wavelets, and Ornstein-Uhlenbeck (OU) random functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
+To project the sample functions onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
 
 For this demonstration, we will use wavelets as projection functions. We will specify the family of wavelets using `basis_params`. After initializing, apply the `fit` method to the smoothed functions to compute the projection coefficients. Here, we will use 14 projection functions generated from the Haar wavelet family.
 
