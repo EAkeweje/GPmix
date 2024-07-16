@@ -119,7 +119,7 @@ To effectively estimate the optimal number of clusters in a dataset, our package
 ```python
 estimate_nclusters(fd)
 ```
-# Usage
+# Package Reference
 ## class `GPmix.Smoother`
 Transforms the raw data into functional data by applying smoothing techniques.
 ```python
