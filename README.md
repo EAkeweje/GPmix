@@ -32,93 +32,6 @@ If you used this package in your research, please cite it:
 ```
 
 
-# Getting Started
-
-This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
-
-```python
-import numpy as np
-data = np.concatenate([np.loadtxt('CBF\CBF_TEST.txt'), np.loadtxt('CBF\CBF_TRAIN.txt')])
-X, y = data[:,1:], data[:,0]
-```
-
-To use the GPmix algorithm in your project, start by importing the necessary modules. The following import statements will include all the main functionalities from the GPmix package, as well as the specific utility for estimating the number of clusters:
-
-```python
-from GPmix import *
-from GPmix.misc import estimate_nclusters
-```
-
-## Smoothing
-
-
-
-Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. The supported basis options include Fourier, B-spline, and wavelet basis. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` method to your data to smooth it.
-
-For this demonstration, we will use the Fourier basis.
-
-```python
-sm = Smoother(basis= 'fourier')
-fd = sm.fit(X)
-fd.plot(group = y)
-```
-![](cbf_smooth.png)
-
-## Projection
-To project the sample functions onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (fPC), random linear combinations of eigen-functions (rl-fPC), B-splines, Fourier basis, discrete wavelets, and Ornstein-Uhlenbeck (OU) random functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
-
-For this demonstration, we will use wavelets as projection functions. We will specify the family of wavelets using `basis_params`. After initializing, apply the `fit` method to the smoothed functions to compute the projection coefficients. Here, we will use 14 projection functions generated from the Haar wavelet family.
-
-```python
-proj = Projector(basis_type= 'wavelet', n_proj = 14, basis_params= {'wv_name': 'haar'})
-coeffs = proj.fit(fd)
-```
-
-## Ensemble Clustering
-
-The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitting a univariate Gaussian Mixture Model (GMM) to each set of projection coefficients. Follow these steps:
-
-- Initialize the `UniGaussianMixtureEnsemble` object by specifying the number of clusters (n_clusters) you want to identify in your dataset.
-- Use the `fit_gmms` method to obtain a collection of GMMs, one for each set of projection coefficients.
-- Use the `get_clustering` method, which aggregates the results from the individual GMMs, to form a consensus clustering.
-
-For this demonstration, we will identify 3 clusters in the sample dataset.
-
-```python
-model = UniGaussianMixtureEnsemble(n_clusters= 3)
-model.fit_gmms(coeffs)
-pred_labels = model.get_clustering()
-```
-To visualize the clustering result, apply the `plot_clustering` method to the functional data object:
-
-```python
-model.plot_clustering(fd)
-```
-![](cbf_clustering.png)
-
-Furthermore, the `UniGaussianMixtureEnsemble` object supports the calculation of several clustering validation indices. For external validation (comparing generated clusters against true labels), you can calculate Adjusted Mutual Information, Adjusted Rand Index, and Correct Classification Accuracy by passing the true labels as parameters. For internal validation (assessing the internal structure of the clusters), you can calculate the Silhouette Score and Davies-Bouldin Score by passing the functional data object as parameters. These metrics help evaluate the effectiveness of the clustering process.
-
-For this demonstration, we calculate all the clustering validation metrics.
-
-```python
-model.adjusted_mutual_info_score(y)   # Adjusted Mutual Information
-
-model.adjusted_rand_score(y)    # Adjusted Rand Index
-
-model.correct_classification_accuracy(y)    # Correct Classification Accuracy
-
-model.silhouette_score(fd)    # Silhouette Score
-
-model.davies_bouldin_score(fd)    # Davies-Bouldin Score
-```
-
-
-## Estimating the Number of Clusters
-To effectively estimate the optimal number of clusters in a dataset, our package includes the `estimate_nclusters` function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as detailed in our paper. Here’s how you can apply this function to your data:
-
-```python
-estimate_nclusters(fd)
-```
 # Package Reference
 ## class `GPmix.Smoother`
 Transforms the raw data into functional data by applying smoothing techniques.
@@ -230,6 +143,94 @@ estimate_nclusters(fdata, ncluster_grid = None)
 **Returns**<br>
     <strong> n_clusters (int) </strong>: estimated number of clusters in the sample functional dataset.
   
+# Getting Started
+
+This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
+
+```python
+import numpy as np
+data = np.concatenate([np.loadtxt('CBF\CBF_TEST.txt'), np.loadtxt('CBF\CBF_TRAIN.txt')])
+X, y = data[:,1:], data[:,0]
+```
+
+To use the GPmix algorithm in your project, start by importing the necessary modules. The following import statements will include all the main functionalities from the GPmix package, as well as the specific utility for estimating the number of clusters:
+
+```python
+from GPmix import *
+from GPmix.misc import estimate_nclusters
+```
+
+## Smoothing
+
+
+
+Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. The supported basis options include Fourier, B-spline, and wavelet basis. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` method to your data to smooth it.
+
+For this demonstration, we will use the Fourier basis.
+
+```python
+sm = Smoother(basis= 'fourier')
+fd = sm.fit(X)
+fd.plot(group = y)
+```
+![](cbf_smooth.png)
+
+## Projection
+To project the sample functions onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (fPC), random linear combinations of eigen-functions (rl-fPC), B-splines, Fourier basis, discrete wavelets, and Ornstein-Uhlenbeck (OU) random functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
+
+For this demonstration, we will use wavelets as projection functions. We will specify the family of wavelets using `basis_params`. After initializing, apply the `fit` method to the smoothed functions to compute the projection coefficients. Here, we will use 14 projection functions generated from the Haar wavelet family.
+
+```python
+proj = Projector(basis_type= 'wavelet', n_proj = 14, basis_params= {'wv_name': 'haar'})
+coeffs = proj.fit(fd)
+```
+
+## Ensemble Clustering
+
+The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitting a univariate Gaussian Mixture Model (GMM) to each set of projection coefficients. Follow these steps:
+
+- Initialize the `UniGaussianMixtureEnsemble` object by specifying the number of clusters (n_clusters) you want to identify in your dataset.
+- Use the `fit_gmms` method to obtain a collection of GMMs, one for each set of projection coefficients.
+- Use the `get_clustering` method, which aggregates the results from the individual GMMs, to form a consensus clustering.
+
+For this demonstration, we will identify 3 clusters in the sample dataset.
+
+```python
+model = UniGaussianMixtureEnsemble(n_clusters= 3)
+model.fit_gmms(coeffs)
+pred_labels = model.get_clustering()
+```
+To visualize the clustering result, apply the `plot_clustering` method to the functional data object:
+
+```python
+model.plot_clustering(fd)
+```
+![](cbf_clustering.png)
+
+Furthermore, the `UniGaussianMixtureEnsemble` object supports the calculation of several clustering validation indices. For external validation (comparing generated clusters against true labels), you can calculate Adjusted Mutual Information, Adjusted Rand Index, and Correct Classification Accuracy by passing the true labels as parameters. For internal validation (assessing the internal structure of the clusters), you can calculate the Silhouette Score and Davies-Bouldin Score by passing the functional data object as parameters. These metrics help evaluate the effectiveness of the clustering process.
+
+For this demonstration, we calculate all the clustering validation metrics.
+
+```python
+model.adjusted_mutual_info_score(y)   # Adjusted Mutual Information
+
+model.adjusted_rand_score(y)    # Adjusted Rand Index
+
+model.correct_classification_accuracy(y)    # Correct Classification Accuracy
+
+model.silhouette_score(fd)    # Silhouette Score
+
+model.davies_bouldin_score(fd)    # Davies-Bouldin Score
+```
+
+
+## Estimating the Number of Clusters
+To effectively estimate the optimal number of clusters in a dataset, our package includes the `estimate_nclusters` function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as detailed in our paper. Here’s how you can apply this function to your data:
+
+```python
+estimate_nclusters(fd)
+```
+
 # Replicating the Experiment Results
 The simulation scenarios investigated in our paper are available in [simulations.py](simulations.py). To reproduce the results from the paper for each specific scenario, you will need to execute the following command after cloning the repo:
 
