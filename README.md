@@ -62,7 +62,7 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
 - <strong> fd_smooth (FDataGrid)</strong>: functional data obtained via the smoothing technique.
 
 **Methods**<br>
-- `fit(X, return_data = True)`: Apply a smoothing method to the raw data `X`. <br>  
+- `fit(X, return_data = True)`: Apply a smoothing method on the raw data `X` to get continuous functions. <br>  
   - <strong> X </strong>: raw data, array-like of shape (n_samples, n_features) or FDataGrid object.
   - <strong> return_data (bool) </strong>: Return the functional data if True. The default value is `True`.
 
