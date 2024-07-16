@@ -147,7 +147,7 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
     ```
     For all smoothing methods except wavelet smoothing, if `basis_params` is not specified, the parameter values are determined by the Generalized Cross-Validation (GCV) technique.<br>
     For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
-    - `'wavelet'`: The wavelet family to use for smoothing. The available wavelet families are: {...} .
+    - `'wavelet'`: The wavelet family to use for smoothing. A list of all supported discrete wavelets can be obtained by running: `print(pywt.wavelist(kind='discrete'))`.
     - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
    
    For wavelet smoothing, if `basis_params` is not specified, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
@@ -177,6 +177,7 @@ Projector(basis_type, n_proj = 3, basis_params = {})
     Projector(basis_type = 'bspline', basis_params = {'order': 1}) 
     Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 1})
     ```
+    The default behavior for projecting onto the Fourier basis is to set the period equal to the length of the interval. This approach works well for all datasets considered in our numerical study. However, we have included the period as a hyperparameter in case users want to project onto Fourier functions with lower (or even higher) oscillations.
 
 **Attributes** <br>
 - <strong> n_features (int) </strong>: number of evaluation points for each sample curve and for the projection functions.
