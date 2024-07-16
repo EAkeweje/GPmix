@@ -208,16 +208,16 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10)
     array-like object of shape (sample size,). The cluster labels for each sample curve.
 - `plot_clustering(fdata)` : visualize clustering.
     - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
-- `adjusted_mutual_info_score(y)`: computes Adjusted Mutual Information.
-    - <strong> y (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `adjusted_rand_score(y)`: computes Adjusted Rand Index.
-    - <strong> y (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `correct_classification_accuracy(y)`: computes Correct Classification Accuracy.
-    - <strong> y (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `silhouette_score(fd)`: computes Silhouette Score.
-    - <strong> fd (FDataGrid) </strong> : the sample (functional) data.
-- `davies_bouldin_score(fd)`: computes Davies-Bouldin Score.
-    - <strong> fd (FDataGrid) </strong> : the sample (functional) data.
+- `adjusted_mutual_info_score(true_labels)`: computes Adjusted Mutual Information.
+    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
+- `adjusted_rand_score(true_labels)`: computes Adjusted Rand Index.
+    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
+- `correct_classification_accuracy(true_labels)`: computes Correct Classification Accuracy.
+    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
+- `silhouette_score(fdata)`: computes Silhouette Score.
+    - <strong> fdata (FDataGrid) </strong> : the sample (functional) data.
+- `davies_bouldin_score(fdata)`: computes Davies-Bouldin Score.
+    - <strong> fdata (FDataGrid) </strong> : the sample (functional) data.
  
  ## `GPmix.misc.estimate_nclusters`
  Applies a technique based on the GPmix algorithm to estimate the optimal number of clusters in a dataset.
