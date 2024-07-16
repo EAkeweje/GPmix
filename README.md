@@ -51,7 +51,7 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
     ```
     For all smoothing methods except wavelet smoothing, if `basis_params` is not specified, the parameter values are determined by the Generalized Cross-Validation (GCV) technique.<br>
     For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
-    - `'wavelet'`: The wavelet family to use for the transformation. The available wavelet families are: {...} .
+    - `'wavelet'`: The wavelet family to use for smoothing. The available wavelet families are: {...} .
     - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
    
    For wavelet smoothing, if `basis_params` is not specified, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
@@ -73,8 +73,8 @@ Project the functional data onto a few randomly generated functions.
 Projector(basis_type, n_proj = 3, basis_params = {})
 ```
 **Parameter Details**<br>
-- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
-- <strong> n_proj (int) </strong>: number of projection functions to use. The default value is `3`.
+- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
+- <strong> n_proj (int) </strong>: number of projection functions to generate. The default value is `3`.
 - <strong> basis_params (dict) </strong>: additional hyperparameters required by `'fourier'`, `'bspline'` and `'wavelet'`. The default value is `{}`. Below are examples of how to specify these hyperparameters:
     ```python
     Projector(basis_type = 'fourier', basis_params = {'period': 2})
@@ -83,13 +83,12 @@ Projector(basis_type, n_proj = 3, basis_params = {})
     ```
 
 **Attributes** <br>
-- <strong> n_features (int) </strong>: number of observed points for each sample curve and for the projection functions.
+- <strong> n_features (int) </strong>: number of evaluation points for each sample curve and for the projection functions.
 - <strong> basis (FDataGrid) </strong>: generated projection functions.
 - <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
 
 **Methods** <br>
-- `fit(fdata)` : compute the projection coefficients.
-   - <strong> fdata (FDataGrid) </strong>: functional data object.<br>
+- `fit(FDataGrid)` : compute the projection coefficients.
 
 **Return**<br>
 array-like object of shape (n_proj, sample size).
@@ -130,18 +129,15 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
 
 **Return**<br>
     array-like object of shape (sample size,). The cluster labels for each sample curve.
-- `plot_clustering(fdata)` : visualize clustering.
-    - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
+- `plot_clustering(FDataGrid)` : visualize the clustered functional data.
 - `adjusted_mutual_info_score(true_labels)`: computes Adjusted Mutual Information.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
 - `adjusted_rand_score(true_labels)`: computes Adjusted Rand Index.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
 - `correct_classification_accuracy(true_labels)`: computes Correct Classification Accuracy.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `silhouette_score(fdata)`: computes Silhouette Score.
-    - <strong> fdata (FDataGrid) </strong> : the sample (functional) data.
-- `davies_bouldin_score(fdata)`: computes Davies-Bouldin Score.
-    - <strong> fdata (FDataGrid) </strong> : the sample (functional) data.
+- `silhouette_score(FDataGrid)`: computes Silhouette Score.
+- `davies_bouldin_score(FDataGrid)`: computes Davies-Bouldin Score.
  
  ## `GPmix.misc.estimate_nclusters`
  
