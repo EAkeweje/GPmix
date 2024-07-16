@@ -50,7 +50,7 @@ from GPmix.misc import estimate_nclusters
 ```
 
 ## Smoothing
-Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` method to your data to smooth it.
+Begin by initializing the `Smoother` object, specifying the type of basis for the smoothing process. You can customize the smoothing by passing additional configurations through the `basis_params` argument. If not specified, the system will automatically determine the best configurations using methods like Random Grid Search and Generalized Cross Validation. After initialization, apply the `fit` method to the raw data to obtain the fitted functional data.
 
 For this demonstration, we will use the Fourier basis.
 
@@ -62,9 +62,9 @@ fd.plot(group = y)
 ![](cbf_smooth.png)
 
 ## Projection
-To project the sample functions onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
+To project the fitted functional data onto specified projection functions, use the `Projector` object. Initialize the `Projector` object with the type of projection functions and the desired number of projections. The `basis_type` argument specifies the type of projection functions. The `n_proj` argument defines the number of projections. The `basis_params` argument allows for further configuration of the projection functions.
 
-For this demonstration, we will use wavelets as projection functions. We will specify the family of wavelets using `basis_params`. After initializing, apply the `fit` method to the smoothed functions to compute the projection coefficients. Here, we will use 14 projection functions generated from the Haar wavelet family.
+For this demonstration, we will use wavelets as projection functions. We will specify the family of wavelets using `basis_params`. After initializing, apply the `fit` method to the functional data object to compute the projection coefficients. Here, we will use 14 projection functions generated from the Haar wavelet family.
 
 ```python
 proj = Projector(basis_type= 'wavelet', n_proj = 14, basis_params= {'wv_name': 'haar'})
@@ -79,7 +79,7 @@ The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitti
 - Use the `fit_gmms` method to obtain a collection of GMMs, one for each set of projection coefficients.
 - Use the `get_clustering` method, which aggregates the results from the individual GMMs, to form a consensus clustering.
 
-For this demonstration, we will identify 3 clusters in the sample dataset.
+For this demonstration, we will identify 3 clusters in the functional data.
 
 ```python
 model = UniGaussianMixtureEnsemble(n_clusters= 3)
@@ -111,7 +111,7 @@ model.davies_bouldin_score(fd)    # Davies-Bouldin Score
 
 
 ## Estimating the Number of Clusters
-To effectively estimate the optimal number of clusters in a dataset, our package includes the `estimate_nclusters` function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as detailed in our paper. Here’s how you can apply this function to your data:
+To estimate the optimal number of clusters in the functional data, our package includes the `estimate_nclusters` function. This function employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC), as detailed in our paper. Here’s how you can apply this function to your data:
 
 ```python
 estimate_nclusters(fd)
