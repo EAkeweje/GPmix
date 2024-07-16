@@ -178,7 +178,7 @@ array-like object of shape (n_proj, sample size).
 ## class `GPmix.UniGaussianMixtureEnsemble`
 Facilitates ensemble clustering by fitting a univariate Gaussian Mixture Model (GMM) to each set of projection coefficients. 
 ```python
-UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10)
+UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_epsilon = 5e-2)
 ```
 - <strong> n_clusters (int) </strong>: specifying number of components in the mixture model.
 - <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: method for initializing the parameters of the GMMs. default = 'kmeans'.
