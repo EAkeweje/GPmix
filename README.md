@@ -32,129 +32,7 @@ If you used this package in your research, please cite it:
 ```
 
 
-# 2. Package Functions
-
-##  `GPmix.Smoother`
-
-Apply smoothing methods on the raw data to get continuous functions.
-```python
-Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
-```
-**Parameter Details**<br>
-- <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. The default value is `'bspline'`. 
-- <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method.  The default value is `{}`.  Below are examples of how to specify these parameters for different smoothing methods:
-    ```python
-    Smoother(basis = 'bspline', basis_params = {'order': 3, 'n_basis': 20})
-    Smoother(basis = 'wavelet', basis_params = {'wavelet': 'db5', 'mode': 'soft'}) 
-    Smoother(basis = 'knn', basis_params = {'bandwidth': 1.0})
-    Smoother(basis = 'fourier', basis_params = {'n_basis': 20, 'period': 1})
-    ```
-    For all smoothing methods except wavelet smoothing, if `basis_params` is not specified, the parameter values are determined by the Generalized Cross-Validation (GCV) technique.<br>
-    For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
-    - `'wavelet'`: The wavelet family to use for smoothing. The available wavelet families are: {...} .
-    - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
-   
-   For wavelet smoothing, if `basis_params` is not specified, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
-- <strong> domain_range (tuple) </strong>: the domain of the functions. The default value is `None`. <br>
-  If `domain_range` is set to `None`, the domain range will default to `[0,1]` if the data is array-like. If the data is an `FDataGrid` object, it will use the `domain_range` of that object.
-
-**Attributes**<br>
-- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained via the smoothing technique.
-
-**Methods**<br>
-- `fit(X, return_data = True)`: Apply a smoothing method on the raw data `X` to get continuous functions. <br>  
-  - <strong> X </strong>: raw data, array-like of shape (n_samples, n_features) or FDataGrid object.
-  - <strong> return_data (bool) </strong>: Return the functional data if True. The default value is `True`.
-
-##  `GPmix.Projector`
-
-Project the functional data onto a few randomly generated functions.
-```python
-Projector(basis_type, n_proj = 3, basis_params = {})
-```
-**Parameter Details**<br>
-- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
-- <strong> n_proj (int) </strong>: number of projection functions to generate. The default value is `3`.
-- <strong> basis_params (dict) </strong>: additional hyperparameters required by `'fourier'`, `'bspline'` and `'wavelet'`. The default value is `{}`. Below are examples of how to specify these hyperparameters:
-    ```python
-    Projector(basis_type = 'fourier', basis_params = {'period': 2})
-    Projector(basis_type = 'bspline', basis_params = {'order': 1}) 
-    Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 1})
-    ```
-
-**Attributes** <br>
-- <strong> n_features (int) </strong>: number of evaluation points for each sample curve and for the projection functions.
-- <strong> basis (FDataGrid) </strong>: generated projection functions.
-- <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
-
-**Methods** <br>
-- `fit(fdata)` : compute the projection coefficients.
-    - <strong> fdata (FDataGrid) </strong>: functional data object.
-
-   **Returns**<br>
-   array-like object of shape (n_proj, sample size).
-- `plot_basis()` : plots the projection functions.
-- `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
-
-##  `GPmix.UniGaussianMixtureEnsemble`
-
-For each projection function, learn a univariate Gaussian mixture model from the projection coefficients. Then extract a consensus clustering from the multiple GMMs.
-```python
-UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_epsilon = 5e-2)
-```
-**Parameter Details**<br>
-- <strong> n_clusters (int) </strong>: number of mixture components in the GMMs.
-- <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: method for initializing the EM algorithm (for estimating GMM parameters). The default value is `'kmeans'`.
-- <strong> n_init (int) </strong>: number of repeats of the EM algorithm, each with a different initilization. The algorithm returns the best GMM fit. The default value is `10`.
-- <strong> mom_epsilon (float) </strong>: lower bound for GMM weights, only applicable if `init_method = 'mom'`. The default value is `5e-2`.
-    
-**Attributes**<br>
-- <strong> n_projs (int) </strong>: number of base clusterings (or projections).
-- <strong> data_size (int) </strong>: sample size.
-- <strong> gmms (list) </strong> : a list of univariate GMMs, one for each projection function.
-- <strong> clustering_weights_ (array-like of shape (n_projs,)) </strong>: weights for the base clusterings.
-
-**Methods**<br>
-- `fit_gmms(projs_coeffs,  n_jobs = -1, **kwargs)`: fit GMM to projection coefficients.
-  - <strong> projs_coeffs (array-like of shape (n_proj, sample size)) </strong> : projection coefficients.
-  - <strong> n_jobs </strong>: number of concurrently running jobs to parrallelize fitting the gmms. The default value is `-1`, to use all available CPUs.
-  - <strong> kwargs </strong>: any keyword argument of `joblib.Parallel`.
--  `plot_gmms(ncol = 4, fontsize = 12, fig_kws = { }, **kwargs)`: visualization of GMM fits.
-   - <strong> ncol (int) </strong>: number of subplot columns. The default value is `4`.
-   - <strong> fontsize (int) </strong>: fontsize for the plot labels. The default value is `12`.
-   - <strong> fig_kws </strong>: keyword arguments for the figures (subplots). The default value is `{}`.
-   - <strong> kwargs </strong>: other keyword arguments for customizing seaborn `histplot`.
-- `get_clustering(weighted_sum = True, precompute_gmms = None)`: obtain the consensus clustering.
-   - <strong> weighted_sum (bool) </strong>: specifying whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `True`.
-   - <strong> precompute_gmms (list) </strong>: a subset of the fitted GMMs. By default, the consensus clustering is extracted from all the fitted GMMs. This parameter allows selecting a subset of the fitted GMMs for constructing the consensus clustering.
-     
-      **Returns**<br>
-       array-like object of shape (sample size,). The cluster labels for each sample curve.
-- `plot_clustering(FDataGrid)` : visualize the clustered functional data.
-- `adjusted_mutual_info_score(true_labels)`: computes Adjusted Mutual Information.
-    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `adjusted_rand_score(true_labels)`: computes Adjusted Rand Index.
-    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `correct_classification_accuracy(true_labels)`: computes Correct Classification Accuracy.
-    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `silhouette_score(FDataGrid)`: computes Silhouette Score.
-- `davies_bouldin_score(FDataGrid)`: computes Davies-Bouldin Score.
- 
- ## `GPmix.misc.estimate_nclusters`
- 
-The function `estimate_nclusters` employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC).
- ```python
-estimate_nclusters(fdata, ncluster_grid = None)
-```
-**Parameter Details**<br>
-- <strong> fdata (FDataGrid) </strong>: functional data object.
-- <strong> ncluster_grid (array-like) </strong>: specifies the grid within which the number of clusters is searched. The default value is `[2, 3, ..., 14]`. <br>
-
-**Return**<br>
-    <strong> n_clusters (int) </strong>: estimated number of clusters in the sample functional dataset.
-  
-
-# 3. Code Example
+# 2. Code Example
 
 This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
 
@@ -249,6 +127,120 @@ The simulation scenarios investigated in our paper are available in [simulations
 Replace `<tag>` with the appropriate scenario identifier, which ranges from A to L. Each tag corresponds to a different configuration file located in the [data_configs](data_configs). By executing the command with the relevant tag, the results for that particular scenario will be replicated. 
 
 
+
+# 3. Package Functions
+
+##  `GPmix.Smoother`
+
+Apply smoothing methods on the raw data to get continuous functions.
+```python
+Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
+```
+**Parameters**<br>
+- <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. The default value is `'bspline'`. 
+- <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method.  The default value is `{}`.  Below are examples of how to specify these parameters for different smoothing methods:
+    ```python
+    Smoother(basis = 'bspline', basis_params = {'order': 3, 'n_basis': 20})
+    Smoother(basis = 'wavelet', basis_params = {'wavelet': 'db5', 'mode': 'soft'}) 
+    Smoother(basis = 'knn', basis_params = {'bandwidth': 1.0})
+    Smoother(basis = 'fourier', basis_params = {'n_basis': 20, 'period': 1})
+    ```
+    For all smoothing methods except wavelet smoothing, if `basis_params` is not specified, the parameter values are determined by the Generalized Cross-Validation (GCV) technique.<br>
+    For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
+    - `'wavelet'`: The wavelet family to use for smoothing. The available wavelet families are: {...} .
+    - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
+   
+   For wavelet smoothing, if `basis_params` is not specified, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
+- <strong> domain_range (tuple) </strong>: the domain of the functions. The default value is `None`. <br>
+  If `domain_range` is set to `None`, the domain range will default to `[0,1]` if the data is array-like. If the data is an `FDataGrid` object, it will use the `domain_range` of that object.
+
+**Attributes**<br>
+- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained via the smoothing technique.
+
+**Methods**<br>
+- `fit(X, return_data = True)`: Apply a smoothing method on the raw data `X` to get continuous functions. <br>  
+  - <strong> X </strong>: raw data, array-like of shape (n_samples, n_features) or FDataGrid object.
+  - <strong> return_data (bool) </strong>: Return the functional data if True. The default value is `True`.
+
+##  `GPmix.Projector`
+
+Project the functional data onto a few randomly generated functions.
+```python
+Projector(basis_type, n_proj = 3, basis_params = {})
+```
+**Parameters**<br>
+- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection functions. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
+- <strong> n_proj (int) </strong>: number of projection functions to generate. The default value is `3`.
+- <strong> basis_params (dict) </strong>: additional hyperparameters required by `'fourier'`, `'bspline'` and `'wavelet'`. The default value is `{}`. Below are examples of how to specify these hyperparameters:
+    ```python
+    Projector(basis_type = 'fourier', basis_params = {'period': 2})
+    Projector(basis_type = 'bspline', basis_params = {'order': 1}) 
+    Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 1})
+    ```
+
+**Attributes** <br>
+- <strong> n_features (int) </strong>: number of evaluation points for each sample curve and for the projection functions.
+- <strong> basis (FDataGrid) </strong>: generated projection functions.
+- <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
+
+**Methods** <br>
+- `fit(fdata)` : compute the projection coefficients. Return array-like object of shape (n_proj, sample size).
+    - <strong> fdata (FDataGrid) </strong>: functional data object.
+- `plot_basis()` : plots the projection functions.
+- `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
+
+##  `GPmix.UniGaussianMixtureEnsemble`
+
+For each projection function, learn a univariate Gaussian mixture model from the projection coefficients. Then extract a consensus clustering from the multiple GMMs.
+```python
+UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_epsilon = 5e-2)
+```
+**Parameters**<br>
+- <strong> n_clusters (int) </strong>: number of mixture components in the GMMs.
+- <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: method for initializing the EM algorithm (for estimating GMM parameters). The default value is `'kmeans'`.
+- <strong> n_init (int) </strong>: number of repeats of the EM algorithm, each with a different initilization. The algorithm returns the best GMM fit. The default value is `10`.
+- <strong> mom_epsilon (float) </strong>: lower bound for GMM weights, only applicable if `init_method = 'mom'`. The default value is `5e-2`.
+    
+**Attributes**<br>
+- <strong> n_projs (int) </strong>: number of base clusterings (or projections).
+- <strong> data_size (int) </strong>: sample size.
+- <strong> gmms (list) </strong> : a list of univariate GMMs, one for each projection function.
+- <strong> clustering_weights_ (array-like of shape (n_projs,)) </strong>: weights for the base clusterings.
+
+**Methods**<br>
+- `fit_gmms(projs_coeffs,  n_jobs = -1, **kwargs)`: fit GMM to projection coefficients.
+  - <strong> projs_coeffs (array-like of shape (n_proj, sample size)) </strong> : projection coefficients.
+  - <strong> n_jobs </strong>: number of concurrently running jobs to parrallelize fitting the gmms. The default value is `-1`, to use all available CPUs.
+  - <strong> kwargs </strong>: any keyword argument of `joblib.Parallel`.
+-  `plot_gmms(ncol = 4, fontsize = 12, fig_kws = { }, **kwargs)`: visualization of GMM fits.
+   - <strong> ncol (int) </strong>: number of subplot columns. The default value is `4`.
+   - <strong> fontsize (int) </strong>: fontsize for the plot labels. The default value is `12`.
+   - <strong> fig_kws </strong>: keyword arguments for the figures (subplots). The default value is `{}`.
+   - <strong> kwargs </strong>: other keyword arguments for customizing seaborn `histplot`.
+- `get_clustering(weighted_sum = True, precompute_gmms = None)`: obtain the consensus clustering. Return array-like object of shape (sample size,). The cluster labels for each sample curve.
+   - <strong> weighted_sum (bool) </strong>: specifying whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `True`.
+   - <strong> precompute_gmms (list) </strong>: a subset of the fitted GMMs. By default, the consensus clustering is extracted from all the fitted GMMs. This parameter allows selecting a subset of the fitted GMMs for constructing the consensus clustering.       
+- `plot_clustering(FDataGrid)` : visualize the clustered functional data.
+- `adjusted_mutual_info_score(true_labels)`: computes Adjusted Mutual Information.
+    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
+- `adjusted_rand_score(true_labels)`: computes Adjusted Rand Index.
+    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
+- `correct_classification_accuracy(true_labels)`: computes Correct Classification Accuracy.
+    - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
+- `silhouette_score(FDataGrid)`: computes Silhouette Score.
+- `davies_bouldin_score(FDataGrid)`: computes Davies-Bouldin Score.
+ 
+ ## `GPmix.misc.estimate_nclusters`
+ 
+The function `estimate_nclusters` employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC).
+ ```python
+estimate_nclusters(fdata, ncluster_grid = None)
+```
+**Parameters**<br>
+- <strong> fdata (FDataGrid) </strong>: functional data object.
+- <strong> ncluster_grid (array-like) </strong>: specifies the grid within which the number of clusters is searched. The default value is `[2, 3, ..., 14]`. <br>
+
+  
 
 # Contributing
 
