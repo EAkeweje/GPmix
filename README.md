@@ -2,7 +2,7 @@
 
 ![](projection_illustration.png)
 
-# About GPmix
+# 1. About GPmix
 
 [GPmix](GPmix) is a clustering algorithm for functional data that are generated from Gaussian process mixtures. Although designed for Gaussian process mixtures, our experimental study demonstrated that GPmix works well even for functional data that are not from Gaussian process mixtures.
 
@@ -32,7 +32,7 @@ If you used this package in your research, please cite it:
 ```
 
 
-# Package Functions
+# 2. Package Functions
 
 ##  `GPmix.Smoother`
 
@@ -157,7 +157,7 @@ estimate_nclusters(fdata, ncluster_grid = None)
     <strong> n_clusters (int) </strong>: estimated number of clusters in the sample functional dataset.
   
 
-# Code Example
+# 3. Code Example
 
 This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
 
