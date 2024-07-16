@@ -88,10 +88,11 @@ Projector(basis_type, n_proj = 3, basis_params = {})
 - <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
 
 **Methods** <br>
-- `fit(FDataGrid)` : compute the projection coefficients.
+- `fit(fdata)` : compute the projection coefficients.
+    - <strong> fdata (FDataGrid) </strong>: functional data object.
 
-**Return**<br>
-array-like object of shape (n_proj, sample size).
+   **Returns**<br>
+   array-like object of shape (n_proj, sample size).
 - `plot_basis()` : plots the projection functions.
 - `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
 
@@ -126,9 +127,9 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
 - `get_clustering(weighted_sum = True, precompute_gmms = None)`: obtain the consensus clustering.
    - <strong> weighted_sum (bool) </strong>: specifying whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `True`.
    - <strong> precompute_gmms (list) </strong>: a subset of the fitted GMMs. By default, the consensus clustering is extracted from all the fitted GMMs. This parameter allows selecting a subset of the fitted GMMs for constructing the consensus clustering.
-
-**Return**<br>
-    array-like object of shape (sample size,). The cluster labels for each sample curve.
+     
+      **Returns**<br>
+       array-like object of shape (sample size,). The cluster labels for each sample curve.
 - `plot_clustering(FDataGrid)` : visualize the clustered functional data.
 - `adjusted_mutual_info_score(true_labels)`: computes Adjusted Mutual Information.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
