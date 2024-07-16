@@ -91,7 +91,7 @@ Projector(basis_type, n_proj = 3, basis_params = {})
 - `fit(fdata)` : computes projection coefficients.
    - <strong> fdata (FDataGrid) </strong>: smooth functional data.<br>
 
-**Returns**<br>
+**Return**<br>
 array-like object of shape (n_proj, sample size).
 - `plot_basis()` : plots the projection functions.
 - `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
@@ -128,7 +128,7 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
    - <strong> weighted_sum (bool) </strong>: specifies whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. default = True.
    - <strong> precompute_gmms (list) </strong>: a list of fitted univariate GMMs. By default, the method constructs the consensus clustering using the results from `fit_gmms`, however, users may occassionally want to construct the concensus clustering from a subset of the fitted GMMs. This parameter allows for such flexibility.
 
-**Returns**
+**Return**
     array-like object of shape (sample size,). The cluster labels for each sample curve.
 - `plot_clustering(fdata)` : visualize clustering.
     - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
@@ -145,17 +145,18 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
  
  ## `GPmix.misc.estimate_nclusters`
  
- Applies a technique based on the GPmix algorithm to estimate the optimal number of clusters in a dataset.
+The function `estimate_nclusters` employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC) or the Bayesian Information Criterion (BIC).
  ```python
 estimate_nclusters(fdata, ncluster_grid = None)
 ```
 **Parameter Details**
-- <strong> fdata (FDataGrid) </strong>: sample functional dataset.
-- <strong> ncluster_grid (array-like) </strong>: specifies the grid within which the number of clusters is searched. default = [2, 3, ..., 14]. <br>
+- <strong> fdata (FDataGrid) </strong>: functional data object.
+- <strong> ncluster_grid (array-like) </strong>: specifies the grid within which the number of clusters is searched. The default value is `[2, 3, ..., 14]`. <br>
 
-**Returns**<br>
+**Return**
     <strong> n_clusters (int) </strong>: estimated number of clusters in the sample functional dataset.
   
+
 # Code Example
 
 This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
