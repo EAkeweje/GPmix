@@ -40,7 +40,7 @@ Apply smoothing methods on the raw data to get continuous functions.
 ```python
 Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
 ```
-**Parameter Details**
+**Parameter Details**<br>
 - <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. The default value is `'bspline'`. 
 - <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method.  The default value is `{}`.  Below are examples of how to specify these parameters for different smoothing methods:
     ```python
@@ -58,10 +58,10 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
 - <strong> domain_range (tuple) </strong>: the domain of the functions. The default value is `None`. <br>
   If `domain_range` is set to `None`, the domain range will default to `[0,1]` if the data is array-like. If the data is an `FDataGrid` object, it will use the `domain_range` of that object.
 
-**Attributes**
+**Attributes**<br>
 - <strong> fd_smooth (FDataGrid)</strong>: functional data obtained via the smoothing technique.
 
-**Methods**
+**Methods**<br>
 - `fit(X, return_data = True)`: Apply a smoothing method to the raw data `X`. <br>  
   - <strong> X </strong>: raw data, array-like of shape (n_samples, n_features) or FDataGrid object.
   - <strong> return_data (bool) </strong>: Return the functional data if True. The default value is `True`.
@@ -72,14 +72,14 @@ Project the functional data onto a few randomly generated functions.
 ```python
 Projector(basis_type, n_proj = 3, basis_params = {})
 ```
-**Parameter Details**
-- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, discrete wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
+**Parameter Details**<br>
+- <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported `basis_type` options are: eigen-functions from the fPC decomposition (`'fpc'`), random linear combinations of eigen-functions (`'rl-fpc'`), B-splines, Fourier basis, wavelets, and Ornstein-Uhlenbeck (`'ou'`) random functions. 
 - <strong> n_proj (int) </strong>: number of projection functions to use. The default value is `3`.
-- <strong> basis_params (dict) </strong>: additional hyperparameters required by some of the projection functions. The default value is `{}`. Below are examples of how to specify these parameters for different types of projection:
+- <strong> basis_params (dict) </strong>: additional hyperparameters required by `'fourier'`, `'bspline'` and `'wavelet'`. The default value is `{}`. Below are examples of how to specify these hyperparameters:
     ```python
-    Projector(basis_type = 'fourier', basis_params = {'period': 3})
-    Projector(basis_type = 'bspline', basis_params = {'order': 3}) 
-    Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 5})
+    Projector(basis_type = 'fourier', basis_params = {'period': 2})
+    Projector(basis_type = 'bspline', basis_params = {'order': 1}) 
+    Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 1})
     ```
 
 **Attributes** <br>
@@ -88,8 +88,8 @@ Projector(basis_type, n_proj = 3, basis_params = {})
 - <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
 
 **Methods** <br>
-- `fit(fdata)` : computes projection coefficients.
-   - <strong> fdata (FDataGrid) </strong>: smooth functional data.<br>
+- `fit(fdata)` : compute the projection coefficients.
+   - <strong> fdata (FDataGrid) </strong>: functional data object.<br>
 
 **Return**<br>
 array-like object of shape (n_proj, sample size).
@@ -102,17 +102,17 @@ For each projection function, learn a univariate Gaussian mixture model from the
 ```python
 UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_epsilon = 5e-2)
 ```
-**Parameter Details**
-- <strong> n_clusters (int) </strong>: specifying number of components in the mixture model.
-- <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: method for initializing the parameters of the GMMs. default = 'kmeans'.
-- <strong> n_init (int) </strong>: the number of initializations to perform; returns the best fits. default = 10.
-- <strong> mom_epsilon (float) </strong>: only applicable if 'init_method' set to 'mom'. Sets lower bound for GMM weights. default = 5e-2.
+**Parameter Details**<br>
+- <strong> n_clusters (int) </strong>: number of mixture components in the GMMs.
+- <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: method for initializing the EM algorithm (for estimating GMM parameters). The default value is `'kmeans'`.
+- <strong> n_init (int) </strong>: number of repeats of the EM algorithm, each with a different initilization. The algorithm returns the best GMM fit. The default value is `10`.
+- <strong> mom_epsilon (float) </strong>: lower bound for GMM weights, only applicable if `init_method = 'mom'`. The default value is `5e-2`.
     
 **Attributes**<br>
 - <strong> n_projs (int) </strong>: number of base clusterings (or projections).
 - <strong> data_size (int) </strong>: sample size.
-- <strong> gmms (list) </strong> : a list of univariate GMMs fitted for each set of projection coefficients.
-- <strong> clustering_weights_ (array-like of shape (n_projs,)) </strong>: weights for each of the base clusterings.
+- <strong> gmms (list) </strong> : a list of univariate GMMs, one for each projection function.
+- <strong> clustering_weights_ (array-like of shape (n_projs,)) </strong>: weights for the base clusterings.
 
 **Methods**<br>
 - `fit_gmms(projs_coeffs,  n_jobs = -1, **kwargs)`: fits projection coefficients to univariate Gaussian mixture models.
@@ -128,7 +128,7 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
    - <strong> weighted_sum (bool) </strong>: specifies whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. default = True.
    - <strong> precompute_gmms (list) </strong>: a list of fitted univariate GMMs. By default, the method constructs the consensus clustering using the results from `fit_gmms`, however, users may occassionally want to construct the concensus clustering from a subset of the fitted GMMs. This parameter allows for such flexibility.
 
-**Return**
+**Return**<br>
     array-like object of shape (sample size,). The cluster labels for each sample curve.
 - `plot_clustering(fdata)` : visualize clustering.
     - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
@@ -149,11 +149,11 @@ The function `estimate_nclusters` employs a systematic search to identify the nu
  ```python
 estimate_nclusters(fdata, ncluster_grid = None)
 ```
-**Parameter Details**
+**Parameter Details**<br>
 - <strong> fdata (FDataGrid) </strong>: functional data object.
 - <strong> ncluster_grid (array-like) </strong>: specifies the grid within which the number of clusters is searched. The default value is `[2, 3, ..., 14]`. <br>
 
-**Return**
+**Return**<br>
     <strong> n_clusters (int) </strong>: estimated number of clusters in the sample functional dataset.
   
 
@@ -242,7 +242,7 @@ To effectively estimate the optimal number of clusters in a dataset, our package
 estimate_nclusters(fd)
 ```
 
-# Replicating the Experiment Results
+## Replicating the Experiment Results
 The simulation scenarios investigated in our paper are available in [simulations.py](simulations.py). To reproduce the results from the paper for each specific scenario, you will need to execute the following command after cloning the repo:
 
  ```bash
