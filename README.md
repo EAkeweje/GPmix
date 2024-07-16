@@ -208,15 +208,15 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10)
     array-like object of shape (sample size,). The cluster labels for each sample curve.
 - `plot_clustering(fdata)` : visualize clustering.
     - <strong> fdata (FDataGrid) </strong>: the clustered functional data.
-- `model.adjusted_mutual_info_score(y)`: computes Adjusted Mutual Information.
+- `adjusted_mutual_info_score(y)`: computes Adjusted Mutual Information.
     - <strong> y (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `model.adjusted_rand_score(y)`: computes Adjusted Rand Index.
+- `adjusted_rand_score(y)`: computes Adjusted Rand Index.
     - <strong> y (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `model.correct_classification_accuracy(y)`: computes Correct Classification Accuracy.
+- `correct_classification_accuracy(y)`: computes Correct Classification Accuracy.
     - <strong> y (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `model.silhouette_score(fd)`: computes Silhouette Score.
+- `silhouette_score(fd)`: computes Silhouette Score.
     - <strong> fd (FDataGrid) </strong> : the sample (functional) data.
-- `model.davies_bouldin_score(fd)`: computes Davies-Bouldin Score.
+- `davies_bouldin_score(fd)`: computes Davies-Bouldin Score.
     - <strong> fd (FDataGrid) </strong> : the sample (functional) data.
  
  ## `GPmix.misc.estimate_nclusters`
