@@ -115,18 +115,18 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
 - <strong> clustering_weights_ (array-like of shape (n_projs,)) </strong>: weights for the base clusterings.
 
 **Methods**<br>
-- `fit_gmms(projs_coeffs,  n_jobs = -1, **kwargs)`: fits projection coefficients to univariate Gaussian mixture models.
+- `fit_gmms(projs_coeffs,  n_jobs = -1, **kwargs)`: fit GMM to projection coefficients.
   - <strong> projs_coeffs (array-like of shape (n_proj, sample size)) </strong> : projection coefficients.
   - <strong> n_jobs </strong>: number of concurrently running jobs to parrallelize fitting the gmms. The default value is `-1`, to use all available CPUs.
   - <strong> kwargs </strong>: any keyword argument of `joblib.Parallel`.
 -  `plot_gmms(ncol = 4, fontsize = 12, fig_kws = { }, **kwargs)`: visualization of GMM fits.
    - <strong> ncol (int) </strong>: number of subplot columns. The default value is `4`.
-   - <strong> fontsize (int) </strong>: set fontsize for plot labels. The default value is `12`.
-   - <strong> fig_kws </strong>: any keyword argument for the figures (subplots). The default value is `{}`.
+   - <strong> fontsize (int) </strong>: fontsize for the plot labels. The default value is `12`.
+   - <strong> fig_kws </strong>: keyword arguments for the figures (subplots). The default value is `{}`.
    - <strong> kwargs </strong>: other keyword arguments for customizing seaborn `histplot`.
-- `get_clustering(weighted_sum = True, precompute_gmms = None)`: to obtain consensus clustering from bases the GMMs.
-   - <strong> weighted_sum (bool) </strong>: specifies whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `` default = True.
-   - <strong> precompute_gmms (list) </strong>: a list of fitted univariate GMMs. By default, the method constructs the consensus clustering using the results from `fit_gmms`, however, users may occassionally want to construct the concensus clustering from a subset of the fitted GMMs. This parameter allows for such flexibility.
+- `get_clustering(weighted_sum = True, precompute_gmms = None)`: obtain the consensus clustering.
+   - <strong> weighted_sum (bool) </strong>: specifying whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `True`.
+   - <strong> precompute_gmms (list) </strong>: a subset of the fitted GMMs. By default, the consensus clustering is extracted from all the fitted GMMs. This parameter allows selecting a subset of the fitted GMMs for constructing the consensus clustering.
 
 **Return**<br>
     array-like object of shape (sample size,). The cluster labels for each sample curve.
