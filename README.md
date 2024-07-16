@@ -66,7 +66,7 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
   - <strong> return_data (bool) </strong>: returns smooth data if True. default = True
 
 ##  `GPmix.Projector`
-Transforms functional data to a set of univariate data by projection onto specified projection functions.
+Project the functional data onto a few randomly generated functions.
 ```python
 Projector(basis_type, n_proj = 3, basis_params = {})
 ```
@@ -92,7 +92,7 @@ array-like object of shape (n_proj, sample size).
 - `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
 
 ##  `GPmix.UniGaussianMixtureEnsemble`
-Facilitates ensemble clustering by fitting a univariate Gaussian Mixture Model (GMM) to each set of projection coefficients. 
+For each projection function, learn a univariate Gaussian mixture model from the projection coefficients. Then extract a consensus clustering from the multiple GMMs.
 ```python
 UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_epsilon = 5e-2)
 ```
