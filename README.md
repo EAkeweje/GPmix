@@ -53,28 +53,31 @@ from GPmix.misc import estimate_nclusters
 
 To smooth the sample curves, use the `Smoother` object: 
 ```python
-Smoother(basis = 'bspline', basis_param = {}, domain_range = None)
+Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
 ```
-- <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. default = 'bspline'. 
-- <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method. default = { }.  <br>
-    Example: <br>
+**Parameter Details**
+- <strong> basis {'bspline', 'fourier', 'wavelet', 'nadaraya_watson', 'knn'} </strong>: a string specifying the smoothing method to use. The default value is `'bspline'`. 
+- <strong> basis_params (dict) </strong>: additional parameters for the selected smoothing method.  The default value is `{}`.  Below are examples of how to specify these parameters for different smoothing methods:
     ```
-    'bspline': {'order': 3, 'n_basis': 20}
-    'wavelet': {'wavelet': 'db5', 'mode': 'soft'}
-    'knn': {'bandwidth': 1.0}
-    'fourier': {'n_basis': 20, 'period': 1}
+    Smoother(basis = 'bspline', basis_params = {'order': 3, 'n_basis': 20})
+    Smoother(basis = 'wavelet', basis_params = {'wavelet': 'db5', 'mode': 'soft'}) 
+    Smoother(basis = 'knn', basis_params = {'bandwidth': 1.0})
+    Smoother(basis = 'fourier', basis_params = {'n_basis': 20, 'period': 1})
     ```
-    If default = { }, the required parameters are selected via the generalized cross-validation (GCV) technique.<br>
-    For wavelets, the wavelet shrinkage denoising technique is implemented. This requires two parameters: the wavelet name and the denoising mode. The wavelet name, `wavelet`, determines the type of wavelet to use for the transformation (e.g., 'db1', 'sym5').  Denoising mode, `mode` defines the method and extent of denoising. The avaiable modes are: 'soft', 'hard', 'garrote', 'greater' and 'less'. If these parameters are not specified, the default values `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
-  
-- <strong> domain_range (tuple) </strong>: the domain of the functions. default = None. <br>
-    If domain_range = None, the domain range is either set to [0,1]  if data is array-like, 
+    For all smoothing methods except wavelet, if `basis_params` is not specified, the parameters are selected via the Generalized Cross-Validation (GCV) technique.<br>
+    For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
+    - `'wavelet'`: The type of wavelet to use for the transformation. The available wavelet families are: {...} .
+    - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
+   
+   If `basis_params` is not specified for wavelet smoothing, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
+- <strong> domain_range (tuple) </strong>: the domain of the functions. The default value is `None`. <br>
+    If `domain_range = None`, the domain range is either set to [0,1]  if data is array-like, 
     or set to the domain_range of the data if data is FDataGrid object.
 
-**Attribute**
-- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained from smoothing given raw data.
+**Attributes**
+- <strong> fd_smooth (FDataGrid)</strong>: functional data obtained via the smoothing technique.
 
-**Methods**
+**Methods** 
 - `fit(X, return_data = True)`: Construct smooth functions from given raw data. <br>  
   - <strong> X (array-like of shape (n_samples, n_features) or FDataGrid object) </strong>: raw (sample) data.
   - <strong> return_data (bool) </strong>: returns smooth data if True. default = True
@@ -98,6 +101,7 @@ Transform functional data to a set of univariate data by projection onto specifi
 ```python
 Projector(basis_type, n_proj = 3, basis_params = {})
 ```
+**Parameter Details**
 - <strong> basis_type {'fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc'} </strong>: a string specifying the type of projection function. Supported projection functions include those generated from Fourier basis, eigen-functions, wavelets, B-spline basis, Ornstein-Uhlenbeck process and random linear combinations of eigen-functions.
 - <strong> n_proj (int) </strong>: Number of projection functions to use, determining the number of univariate data batches to compute. default = 3.
 - <strong> basis_param (dict) </strong>: additional hyperparameters required by some of the projection functions. default = { }. <br>
@@ -135,6 +139,7 @@ The `UniGaussianMixtureEnsemble` object facilitates ensemble clustering by fitti
 ```python
 UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10)
 ```
+**Parameter Details**
 - <strong> n_clusters (int) </strong>: Specifying number of components in the mixture model.
 - <strong> init_method {'kmeans', 'k-means++', 'random', 'random_from_data', 'mom'} </strong>: Method for initializing the parameters of the GMMs. default = 'kmeans'.
 - <strong> n_init (int) </strong>: The number of initializations to perform; returns the best fits. default = 10.
