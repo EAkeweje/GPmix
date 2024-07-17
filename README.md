@@ -148,7 +148,7 @@ Smoother(basis = 'bspline', basis_params = {}, domain_range = None)
     For all smoothing methods except wavelet smoothing, if `basis_params` is not specified, the parameter values are determined by the Generalized Cross-Validation (GCV) technique.<br>
     For wavelet smoothing, the wavelet shrinkage denoising technique is implemented, requiring two parameters:
     - `'wavelet'`: The wavelet family to use for smoothing. A list of all supported discrete wavelets can be obtained by running: `print(pywt.wavelist(kind='discrete'))`.
-    - `'mode'`: The method and extent of denoising. The avaiable modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
+    - `'mode'`: The method and extent of denoising. The available modes are: {'soft', 'hard', 'garrote', 'greater', 'less'}.<br>
    
    For wavelet smoothing, if `basis_params` is not specified, the default configuration `basis_params = {'wavelet': 'db5', 'mode': 'soft'}` will be used.
 - <strong> domain_range (tuple) </strong>: the domain of the functions. The default value is `None`. <br>
