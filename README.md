@@ -185,7 +185,7 @@ Projector(basis_type, n_proj = 3, basis_params = {})
 - <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
 
 **Methods** <br>
-- `fit(FDataGrid)` : compute the projection coefficients. Return array-like object of shape (n_proj, sample size).
+- `fit(FDataGrid)` : computing the projection coefficients. Return array-like object of shape (n_proj, sample size).
 - `plot_basis()` : plots the projection functions.
 - `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
 
@@ -221,14 +221,14 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
    - <strong> weighted_sum (bool) </strong>: specifying whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `True`.
    - <strong> precompute_gmms (list) </strong>: a subset of the fitted GMMs. By default, the consensus clustering is extracted from all the fitted GMMs. This parameter allows selecting a subset of the fitted GMMs for constructing the consensus clustering.       
 - `plot_clustering(FDataGrid)` : visualize the clustered functional data.
-- `adjusted_mutual_info_score(true_labels)`: computes Adjusted Mutual Information.
+- `adjusted_mutual_info_score(true_labels)`: computing the Adjusted Mutual Information.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `adjusted_rand_score(true_labels)`: computes Adjusted Rand Index.
+- `adjusted_rand_score(true_labels)`: computing the Adjusted Rand Index.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `correct_classification_accuracy(true_labels)`: computes Correct Classification Accuracy.
+- `correct_classification_accuracy(true_labels)`: computing the Correct Classification Accuracy.
     - <strong> true_labels (array-like of shape (sample size,)) </strong> : true cluster labels.
-- `silhouette_score(FDataGrid)`: computes Silhouette Score.
-- `davies_bouldin_score(FDataGrid)`: computes Davies-Bouldin Score.
+- `silhouette_score(FDataGrid)`: computing the Silhouette Score.
+- `davies_bouldin_score(FDataGrid)`: computing the Davies-Bouldin Score.
  
  ## `GPmix.misc.estimate_nclusters`
  
