@@ -177,7 +177,7 @@ Projector(basis_type, n_proj = 3, basis_params = {})
     Projector(basis_type = 'bspline', basis_params = {'order': 1}) 
     Projector(basis_type = 'wavelet', basis_params = {'wv_name': 'haar', 'resolution': 1})
     ```
-    The default behavior for projecting onto `fourier` basis is to set the period equal to the length of the domain of the functional data. This approach works well for all datasets considered in our numerical study. However, we have included the period as a hyperparameter in case users want to project onto Fourier functions with lower (or even higher) oscillations. For `bspline`, if `basis_params` is not specified, the default configuration `basis_params = {'order': 3}` will be applied. Similarly, for `wavelet`, if `basis_params` is not specified, the default configuration `basis_params = {'wv_name': 'db5', 'resolution': 1}` will be applied.
+    For `fourier`, the default configuration is setting the `'period'` equal to the length of the domain of the functional data. This approach works well for all datasets investigated in our paper. However, we have included the period as a hyperparameter in case users want to project onto Fourier functions with lower (or higher) oscillations. For `bspline`, if `basis_params` is not specified, the default configuration `basis_params = {'order': 3}` will be applied. Similarly, for `wavelet`, if `basis_params` is not specified, the default configuration `basis_params = {'wv_name': 'db5', 'resolution': 1}` will be applied.
 
 **Attributes** <br>
 - <strong> n_features (int) </strong>: number of evaluation points for each sample curve and for the projection functions.
