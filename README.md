@@ -185,8 +185,7 @@ Projector(basis_type, n_proj = 3, basis_params = {})
 - <strong> coefficients (array-like of shape (n_proj, sample size)) </strong>: projection coefficients.
 
 **Methods** <br>
-- `fit(fdata)` : compute the projection coefficients. Return array-like object of shape (n_proj, sample size).
-    - <strong> fdata (FDataGrid) </strong>: functional data object.
+- `fit(FDataGrid)` : compute the projection coefficients. Return array-like object of shape (n_proj, sample size).
 - `plot_basis()` : plots the projection functions.
 - `plot_projection_coeffs(**kwargs)` : plots the distribution of projection coefficients. Takes `kwargs` from `seaborn.histplot`.
 
