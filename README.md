@@ -217,7 +217,7 @@ UniGaussianMixtureEnsemble(n_clusters, init_method = 'kmeans', n_init = 10, mom_
    - <strong> fontsize (int) </strong>: fontsize for the plot labels. The default value is `12`.
    - <strong> fig_kws </strong>: keyword arguments for the figures (subplots). The default value is `{}`.
    - <strong> kwargs </strong>: other keyword arguments for customizing seaborn `histplot`.
-- `get_clustering(weighted_sum = True, precompute_gmms = None)`: obtain the consensus clustering. Return array-like object of shape (sample size,). The cluster labels for each sample curve.
+- `get_clustering(weighted_sum = True, precompute_gmms = None)`: obtain the consensus clustering. Return array-like object of shape (sample size,), the cluster labels for the sample curves.
    - <strong> weighted_sum (bool) </strong>: specifying whether the total misclassification probability, which measures the overlap among the GMM components, should be weighted by the mixing proportion. The default value is `True`.
    - <strong> precompute_gmms (list) </strong>: a subset of the fitted GMMs. By default, the consensus clustering is extracted from all the fitted GMMs. This parameter allows selecting a subset of the fitted GMMs for constructing the consensus clustering.       
 - `plot_clustering(FDataGrid)` : visualize the clustered functional data.
