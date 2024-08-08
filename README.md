@@ -17,14 +17,14 @@ The main steps of the algorithm are:
 
 If you used this package in your research, please cite it:
 ```latex
-@InProceedings{pmlr-AK2024,
-  title =        {Learning mixtures of {Gaussian} processes through random projection},
+@InProceedings{pmlr-v235-akeweje24a,
+  title = 	 {Learning Mixtures of {G}aussian Processes through Random Projection},
   author =       {Akeweje, Emmanuel and Zhang, Mimi},
   booktitle = 	 {Proceedings of the 41st International Conference on Machine Learning},
-  pages = 	 {},
+  pages = 	 {720--739},
   year = 	 {2024},
-  editor = 	 {},
-  volume = 	 {},
+  editor = 	 {Salakhutdinov, Ruslan and Kolter, Zico and Heller, Katherine and Weller, Adrian and Oliver, Nuria and Scarlett, Jonathan and Berkenkamp, Felix},
+  volume = 	 {235},
   series = 	 {Proceedings of Machine Learning Research},
   month = 	 {21--27 Jul},
   publisher =    {PMLR},
