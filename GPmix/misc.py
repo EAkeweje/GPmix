@@ -63,7 +63,7 @@ def estimate_nclusters(fdata, ncluster_grid = None):
 
     bic_ = []
     aic_ = []
-    for n_comp in range(2, 15):
+    for n_comp in ncluster_grid:
         model = GaussianMixture(n_components=n_comp, n_init= 20)
         model.fit(scores)
         bic_.append(model.bic(scores))
