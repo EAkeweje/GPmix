@@ -71,3 +71,52 @@ def estimate_nclusters(fdata, ncluster_grid = None):
     
     return min([ncluster_grid[np.argmin(aic_)], ncluster_grid[np.argmin(bic_)]])
 
+def hybrid_representative_selection(data, p : float, p1 : float):
+    '''
+    Select representative samples from a large dataset using a hybrid approach combining random sampling and KMeans clustering.
+
+    This method first randomly samples a proportion `p` of the data, then applies KMeans clustering to this subset to select a smaller set of representative samples, as described in:
+    [1] D. Huang, C.-D. Wang, J.-S. Wu, J.-H. Lai and C.-K. Kwoh, "Ultra-Scalable Spectral Clustering and Ensemble Clustering," IEEE TKDE, vol. 32, no. 6, pp. 1212-1226, 2020.
+
+    Parameters
+    ----------
+    data : skfda.FDataGrid or np.ndarray
+        Functional dataset or array to sample from.
+    p : float
+        Proportion of data to randomly sample (0 < p < 1).
+    p1 : float
+        Proportion of data to use as representative samples (0 < p1 < p).
+
+    Returns
+    -------
+    skfda.FDataGrid or np.ndarray
+        Representative samples selected by KMeans clustering.
+
+    Raises
+    ------
+    AssertionError
+        If p1 is not less than p.
+    ValueError
+        If data is not of type skfda.FDataGrid or np.ndarray.
+    '''
+    # Random Selection
+    N = len(data)
+    n = np.ceil(p * N).astype('int') # approx. (100 * p)% of dataset
+    n_idx = np.random.choice(N, size = n, replace = False)
+
+    # Kmeans selection
+    assert p1 < p, "p1 must be less that p."
+    k_reps = int(p1 * N) # approx (100 *p1)% of dataset
+    Kmean_reps = KMeans(n_clusters=k_reps, init= 'k-means++',)
+    if type(data) == skfda.FDataGrid:
+        Kmean_reps.fit(data[n_idx].data_matrix.squeeze())
+        return skfda.FDataGrid(data_matrix= Kmean_reps.cluster_centers_,
+                               grid_points= data.grid_points[0])
+
+    elif type(data) == np.ndarray:
+        Kmean_reps.fit(data[n_idx])
+        return Kmean_reps.cluster_centers_
+
+    else:
+        raise ValueError("'data' type should be either skfda.FDataGrid or numpy.ndarray.")
+
