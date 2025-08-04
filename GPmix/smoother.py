@@ -15,33 +15,78 @@ from skfda.preprocessing.smoothing.validation import SmoothingParameterSearch, L
 import pywt
 
 
-class Smoother():
-    '''Transform numpy ndarray to functional data (skfda.FDataGrid object) via smoothing.
+"""
+smoother.py
+===========
+
+This module provides the `Smoother` class for transforming numpy ndarrays or skfda.FDataGrid objects into smoothed functional data representations using various smoothing techniques. The class supports B-spline, Fourier, wavelet, Nadaraya-Watson kernel, and k-nearest neighbors (kNN) smoothing bases, with automatic parameter selection via generalized cross-validation (GCV) where available.
+
+Classes
+-------
+Smoother
+    Transforms input data into a smoothed functional data object using the specified smoothing basis.
+
+Examples
+--------
+>>> import numpy as np
+>>> from GPmix.smoother import Smoother
+>>> data = np.random.randn(10, 100)
+>>> smoother = Smoother(basis='bspline', basis_params={'n_basis': 10})
+>>> fd_smooth = smoother.fit(data)
+"""
+
+class Smoother:
+    """
+    Transform numpy ndarray or skfda.FDataGrid to a smoothed functional data object via smoothing.
 
     Parameters
     ----------
-    basis : str, default = 'bspline'
-        Smoothing basis. Supports 'bspline', 'fourier', 'wavelet', 'nadaraya_watson', and 'knn'.
-    basis_params : dict, default = {}
-        Additional parameters for smoothing basis. By default, the required parameters are selected via generalized cross-validation (GCV) technique.
-        However, for smoothining with wavelet basis, GCV was not implemented, and 
-        Example:
-                B-spline basis: {'order': 3, 'n_basis': 20}
-                Wavelet basis: {'wavelet': 'db4', 'n_basis': 20, 'mode' : 'soft'}
-                Kernel basis: {'bandwidth': 1.0}
-                Fourier basis: {'n_basis': 20, 'period': 1}
-    domain_range : tuple | None. default = None
-        The domain range of the functional data. For domain_range = None, the domain range is either set to [0,1]  if data is array-like, 
-        or set to the domain_range of the data if data is FDataGrid object.
+    basis : str, default='bspline'
+        Smoothing basis to use. Supported options are:
+            - 'bspline': B-spline basis smoothing.
+            - 'fourier': Fourier basis smoothing.
+            - 'wavelet': Wavelet basis smoothing.
+            - 'nadaraya_watson': Nadaraya-Watson kernel smoothing.
+            - 'knn': k-nearest neighbors kernel smoothing.
+    basis_params : dict, default={}
+        Additional parameters for the smoothing basis. If not provided, required parameters are selected via generalized cross-validation (GCV) where implemented.
+        Example parameters:
+            - B-spline: {'order': 3, 'n_basis': 20}
+            - Wavelet: {'wavelet': 'db4', 'mode': 'soft'}
+            - Kernel: {'bandwidth': 1.0}
+            - Fourier: {'n_basis': 20, 'period': 1}
+        For wavelet basis, GCV is not implemented.
+    domain_range : tuple or None, default=None
+        The domain range of the functional data. If None, the domain is set to [0, 1] for array-like data, or inherited from the FDataGrid object.
+
+    Attributes
+    ----------
+    gcv_score : float or None
+        The best GCV score found during parameter selection, if applicable.
+    fd_smooth : skfda.FDataGrid
+        The smoothed functional data object.
+    grid_points : ndarray
+        The grid points used for the functional data.
 
     Methods
     -------
-    fit :
-        Construct smoothed version of the data.
+    fit(fd, return_data=True)
+        Fit the transformation to the input data and return the smoothed functional data.
+    """
 
-    '''
-    
-    def __init__(self, basis = 'bspline', basis_params= {}, domain_range=None):
+    def __init__(self, basis='bspline', basis_params={}, domain_range=None):
+        """
+        Initialize the Smoother object.
+
+        Parameters
+        ----------
+        basis : str, default='bspline'
+            Smoothing basis to use. See class docstring for options.
+        basis_params : dict, default={}
+            Additional parameters for the smoothing basis.
+        domain_range : tuple or None, default=None
+            The domain range of the functional data.
+        """
         self.basis = basis
         self.basis_params = basis_params
         self.domain_range = domain_range

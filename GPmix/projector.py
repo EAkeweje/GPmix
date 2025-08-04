@@ -15,56 +15,137 @@ import matplotlib.pyplot as plt
 
 import warnings
 
+"""
+projector.py
+============
+
+This module provides the `Projector` class for projecting functional data onto a set of univariate data
+using various types of projection functions (basis). It supports Fourier, B-spline, eigenfunction (FPC),
+wavelet, Ornstein-Uhlenbeck process, and random linear combinations of eigenfunctions as projection bases.
+
+Classes
+-------
+Projector
+    Transforms functional data to univariate data by projecting onto specified basis functions.
+
+Dependencies
+------------
+- scikit-fda (skfda)
+- numpy
+- pywavelets (pywt)
+- seaborn
+- matplotlib
+
+Example
+-------
+>>> from skfda.datasets import make_gaussian_process
+>>> from projector import Projector
+>>> fdata = make_gaussian_process(n_samples=10, n_features=100)
+>>> proj = Projector(basis_type='fourier', n_proj=3)
+>>> coeffs = proj.fit(fdata)
+>>> proj.plot_basis()
+>>> proj.plot_projection_coeffs()
+
+"""
+
+
 class Projector():
-    '''Transform functional data to a set of univariate data by projection onto specified projection functions.
+    """
+    Transform functional data to a set of univariate data by projection onto specified projection functions.
 
     Parameters
     ----------
     basis_type : str
-        Specifies the type of projection function. Supported types include 'fourier', 'fpc', 'wavelet', 'bspline', 'ou', and 'rl-fpc' which correspond to projection functions generated from Fourier basis, eigen-functions, wavelets,
-        B-spline basis, Ornstein-Uhlenbeck process and random linear combinations of eigen-functions respectively.
-    n_proj : int, default = 3
-        Number of projections functions to use, determining the number of univariate data batches to compute.
-    basis_param : dict
-        Dictionary for hyperparameters which are required by certain type of projection functions. Supported keys for this dictionary are 'period' for Fourier basis, 'order' for B-spline basis,
-        'wv_name', and 'resolution' for specifying the name, and the base (lowest) resolution for wavelet basis. 
-        For example:
-        basis_param = {'order': 5} to specify the generation of projection functions from B-spline basis of order 5.
-        basis_param = {'wv_name': 'db5', 'resolution' : 2} to specify generation of projection functions from multi-resolution wavelets of db5, with lowest resolution 2.
-    
+        Specifies the type of projection function. Supported types include:
+        - 'fourier': Fourier basis functions.
+        - 'fpc': Eigenfunctions from functional principal component analysis.
+        - 'wavelet': Discrete wavelet basis.
+        - 'bspline': B-spline basis functions.
+        - 'ou': Ornstein-Uhlenbeck process realizations.
+        - 'rl-fpc': Random linear combinations of eigenfunctions.
+
+    n_proj : int, default=3
+        Number of projection functions to use (i.e., number of univariate projections).
+
+    basis_params : dict, optional
+        Dictionary of hyperparameters for basis generation. Supported keys:
+        - 'period': Period for Fourier basis.
+        - 'order': Order for B-spline basis.
+        - 'wv_name': Name of the wavelet (for wavelet basis).
+        - 'resolution': Base resolution for wavelet basis.
+
     Attributes
     ----------
     n_features : int
-        Number of grid points for the projection functions, and sample curves.
-    basis : skfda.FDataGrid object
-        Specified projection functions.
-    coefficients : array-like of shape (n_proj, N) where N is sample size of functional data.
-        Projection coefficients.
+        Number of grid points for the projection functions and sample curves.
+
+    basis : skfda.FDataGrid
+        The projection functions used.
+
+    coefficients : ndarray of shape (n_proj, N)
+        Projection coefficients for N samples.
 
     Methods
     -------
-    fit :
-        Compute projection coefficients.
-    plot_basis :
-        Plot projection functions.
-    plot_projection_coeffs :
+    fit(fdata)
+        Compute projection coefficients for the given functional data.
+
+    plot_basis(**kwargs)
+        Plot the projection functions.
+
+    plot_projection_coeffs(**kwargs)
         Visualize the distribution of projection coefficients.
-    
-    '''
+
+    Notes
+    -----
+    The class supports orthogonalization of basis functions and can handle several types of bases.
+    """
+
     def __init__(self, basis_type: str, n_proj: int = 3, basis_params: dict = {} ) -> None: 
+        """
+        Initialize the Projector.
+
+        Parameters
+        ----------
+        basis_type : str
+            Type of projection basis ('fourier', 'fpc', 'wavelet', 'bspline', 'ou', 'rl-fpc').
+        n_proj : int, default=3
+            Number of projection functions.
+        basis_params : dict, optional
+            Parameters for basis generation.
+        """
         self.basis_type = basis_type
         self.n_proj = n_proj
         self.basis_params = basis_params
         
-        #check the basis_param does not contain unwanted keys
+        # Check for unwanted keys in basis_params
         if not all(key in ['period', 'order', 'wv_name', 'resolution'] for key in self.basis_params.keys()):
             raise ValueError('basis_params contains some unknown keys. '
                             'Ensure that the dict keys are limited to the following: '
                             "'period', 'order', 'wv_name', 'resolution'."
-
             )
 
     def get_wavelet_signal(self, wavelet_name):
+        """
+        Retrieve the scaling and wavelet functions for a given discrete wavelet.
+
+        Parameters
+        ----------
+        wavelet_name : str
+            Name of the discrete wavelet.
+
+        Returns
+        -------
+        scaling_function : ndarray
+            The scaling (father) wavelet function.
+        wavelet_function : ndarray
+            The wavelet (mother) function.
+
+        Raises
+        ------
+        ValueError
+            If the wavelet is not discrete or is unknown.
+        """
         try:
             wavelet = pywt.Wavelet(wavelet_name)
         except ValueError as e:
@@ -76,7 +157,7 @@ class Projector():
         wavefuns = wavelet.wavefun()
         scaling_function, wavelet_function, x = wavefuns[0], wavefuns[1], wavefuns[-1]
 
-        #truncating tails of scaling and wavelet functions
+        # Truncate tails of scaling and wavelet functions
         tails = 1e-1
         nonzero_idx = np.argwhere(np.abs(wavelet_function) > tails)
         wavelet_function = wavelet_function[nonzero_idx[0,0]: nonzero_idx[-1,0] + 1]
@@ -87,59 +168,92 @@ class Projector():
     
 
     def dilate_translate_signal(self, signal, n_trans):
-        #knots are needed to break the domain into subs and create intervals for the translated functions in a well structured way.
+        """
+        Generate dilated and translated versions of a signal over the domain.
+
+        Parameters
+        ----------
+        signal : ndarray
+            The signal to dilate and translate.
+        n_trans : int
+            Number of translations (intervals).
+
+        Returns
+        -------
+        list of skfda.FDataGrid
+            List of normalized, dilated, and translated signals as FDataGrid objects.
+        """
         knots = np.linspace(self.domain_range[0], self.domain_range[1], n_trans + 1)
-        #ith interval starts from ith knot and ends at 3rd knot away.
-        # sub_domain = [[knots[i], knots[i + 1]] for i in range(n_trans)]
-        #make arrays into functions defined within specified sub domain range, with zero extrapolations outside given sub domain
         signals_ = [skfda.FDataGrid(signal, grid_points= np.linspace(knots[i], knots[i+1], len(signal)), extrapolation= 'zeros') 
                             for i in range(n_trans)]
 
-        #return normalize signals: signal / norm
+        # Return normalized signals
         return [signal / np.sqrt(skfda.misc.inner_product(signal, signal)) for signal in signals_]
 
 
     def get_wavelet_basis(self, wavelet_name, n):
+        """
+        Construct a wavelet basis using scaling and wavelet functions.
+
+        Parameters
+        ----------
+        wavelet_name : str
+            Name of the discrete wavelet.
+        n : int
+            Number of intervals at the lowest resolution.
+
+        Returns
+        -------
+        skfda.FDataGrid
+            The constructed wavelet basis as FDataGrid.
+        """
         scaling_signal, wavelet_signal = self.get_wavelet_signal(wavelet_name)
 
-        #get lowest resolution father wavelet
+        # Get lowest resolution father wavelet
         basis = self.dilate_translate_signal(scaling_signal, n)
 
-
-        #get lowest resolution mother wavelet
+        # Get lowest resolution mother wavelet
         basis = basis + self.dilate_translate_signal(wavelet_signal, n)
 
-        #get other higher resolutions wavelets
+        # Get higher resolution wavelets
         r_basis = self.n_proj - 2 * n
         while r_basis > 0:
             n *= 2
             basis = basis + self.dilate_translate_signal(wavelet_signal, n)
             r_basis -= n
 
-        #evaluate the basis at grid points
+        # Evaluate the basis at grid points
         basis_grid = [skfda.FDataGrid(basis_(self.grid_points).squeeze(), grid_points= self.grid_points)
             for basis_ in basis[ :self.n_proj]
             ]
 
-        #return basis as a FDataGrid object
+        # Return basis as a FDataGrid object
         return skfda.concatenate(basis_grid)
 
 
     def _generate_basis(self) -> FDataGrid:
-        '''Generate projection functions from Fourier Basis, B-spline basis, Ornstein-Uhlenbeck process, or Wavelet basis.'''
+        """
+        Generate projection functions from the specified basis type.
 
+        Returns
+        -------
+        skfda.FDataGrid
+            The generated basis functions.
+
+        Raises
+        ------
+        ValueError
+            If the basis type is unknown.
+        """
         if self.basis_type == 'fourier':
             self.period = self.basis_params.get('period', self.domain_range[1] - self.domain_range[0])
-            nb = self.n_proj #add one since the first fourier basis will be dropped
+            nb = self.n_proj
             
             if (nb % 2) == 0:
-                # increase number of basis by 1 because only odd number of basis is supported for fourier.
                 nb += 1
 
             coeffs = np.eye(nb)
             basis = FourierBasis(domain_range= self.domain_range, n_basis= nb, period = self.period)
-            #return appropriate number of basis; cut-off any added basis.
-            # update the constant basis
             return FDataBasis(basis, coeffs).to_grid(self.grid_points)[ : self.n_proj]
 
         elif self.basis_type == 'bspline':
@@ -150,7 +264,7 @@ class Projector():
             return FDataBasis(basis, coeffs).to_grid(self.grid_points)
         
         elif self.basis_type == 'ou':
-            #Ornstein-Uhlenbeck process: mean = 0, k(x,y) = exp(-|x - y|)
+            # Ornstein-Uhlenbeck process: mean = 0, k(x,y) = exp(-|x - y|)
             basis = make_gaussian_process(start = self.domain_range[0], stop = self.domain_range[1], n_samples = self.n_proj, 
                                               n_features = 2 * len(self.grid_points), mean = 0, cov = Exponential(variance = 1, length_scale=1)
                                                     ).to_grid(self.grid_points)
@@ -158,20 +272,32 @@ class Projector():
             return basis
 
         elif self.basis_type == 'wavelet':
-            wavelet_name = self.basis_params.get('wv_name', 'db5') #wavelet name
-            n = self.basis_params.get('resolution', 1) #number of intervals in lowest resolution
+            wavelet_name = self.basis_params.get('wv_name', 'db5')
+            n = self.basis_params.get('resolution', 1)
 
             return self.get_wavelet_basis(wavelet_name, n)
             
     def _compute_fpc_combination(self, fdata):
-        '''Construct projection function as random linear combination of eigenfunctions explaining atleast 95% of variation in sample data.'''
+        """
+        Construct projection functions as random linear combinations of eigenfunctions
+        explaining at least 95% of the variation in the sample data.
 
+        Parameters
+        ----------
+        fdata : skfda.FDataGrid
+            The functional data.
+
+        Returns
+        -------
+        skfda.FDataGrid
+            The constructed basis as random linear combinations of eigenfunctions.
+        """
         fpca_ = FPCA(n_components= min(fdata.data_matrix.squeeze().shape))
         fpca_.fit(fdata)
         lambdas_sq = np.square(fpca_.singular_values_) 
-        jn = np.argmax(np.cumsum(lambdas_sq / lambdas_sq.sum()) >= 0.95) + 1 #threshold with singular values.
+        jn = np.argmax(np.cumsum(lambdas_sq / lambdas_sq.sum()) >= 0.95) + 1
 
-        s2 = [skfda.misc.inner_product(fpca_.components_[i], fdata).var() for i in range(jn)]#variance of the of FPC scores
+        s2 = [skfda.misc.inner_product(fpca_.components_[i], fdata).var() for i in range(jn)]
         ej = fpca_.components_[:jn]
 
         gammas = np.array([np.random.normal(0, np.sqrt(s2_), self.n_proj) for s2_ in s2])
@@ -183,10 +309,21 @@ class Projector():
         return basis_        
         
     def _is_orthogonal(self, basis: FDataGrid, tol: float | None = None) -> bool:
-        '''
-        Function to check the orthogonality of a given set of projection functions.
-        The orthogonality could subjected to threshold 1e-15 or 1e-10.
-        '''
+        """
+        Check the orthogonality of a given set of projection functions.
+
+        Parameters
+        ----------
+        basis : skfda.FDataGrid
+            The basis functions to check.
+        tol : float, optional
+            Tolerance for orthogonality. If None, checks at 1e-15 and 1e-10.
+
+        Returns
+        -------
+        bool
+            True if orthogonal within tolerance, False otherwise.
+        """
         basis_gram = inner_product_matrix(basis)
         basis_gram_off_diagonal = basis_gram - np.diag(np.diagonal(basis_gram))
         if not tol is None:
@@ -198,13 +335,24 @@ class Projector():
             for tol in [1e-15, 1e-10]:
                 nonzeros = np.count_nonzero(np.absolute(basis_gram_off_diagonal) > tol)
                 if nonzeros == 0:
-                    # print(f'Orthogonality condition satisfied at {tol} tol level')
                     return True
         
         return False
         
     def _gram_schmidt(self, funs: FDataGrid) -> FDataGrid:
-        """Gram-Schmidt orthogonalization process."""
+        """
+        Perform Gram-Schmidt orthogonalization on a set of functions.
+
+        Parameters
+        ----------
+        funs : skfda.FDataGrid
+            Functions to orthogonalize.
+
+        Returns
+        -------
+        skfda.FDataGrid
+            Orthogonalized functions.
+        """
         funs_ = funs.copy()
         num_funs = len(funs_)
 
@@ -223,13 +371,26 @@ class Projector():
 
 
     def _compute_coefficients(self, fdata: FDataGrid):
-        '''Orthogonalize a given set of basis function (or ensure orthogonality), and compute projection coefficient'''
+        """
+        Orthogonalize the basis functions if necessary and compute projection coefficients.
+
+        Parameters
+        ----------
+        fdata : skfda.FDataGrid
+            Functional data to project.
+
+        Returns
+        -------
+        tuple
+            (coefficients, basis) where coefficients is an array of projection coefficients,
+            and basis is the (possibly orthogonalized) basis functions.
+        """
         basis = self._generate_basis()
 
         assert all((basis.grid_points[0].shape == fdata.grid_points[i].shape for i in range(len(fdata.grid_points)))), 'Set the appropriate sample_points for basis functions; number of sample points for both objects, the basis and the functional sample data, must be equal.'
         assert all(((basis.grid_points[0] == fdata.grid_points[i]).all() for i in range(len(fdata.grid_points)))), 'Set the appropriate sample_points for basis functions; sample points for both objects, the basis and the functional sample data, must be equal.'
         
-        # enforce orthogonality where necessary
+        # Enforce orthogonality where necessary
         if self.basis_type not in ['ou', 'wavelet']:
             while not self._is_orthogonal(basis):
                 basis = self._gram_schmidt(basis)
@@ -238,19 +399,41 @@ class Projector():
 
 
     def _compute_fpc(self, fdata):
-        '''Construct the eigenfunction'''
+        """
+        Construct the eigenfunctions (principal components) from the data.
+
+        Parameters
+        ----------
+        fdata : skfda.FDataGrid
+            Functional data.
+
+        Returns
+        -------
+        skfda.FDataGrid
+            The principal component functions.
+        """
         fpca_ = FPCA(n_components = self.n_proj)
         basis = fpca_.fit(fdata).components_
         return basis
 
 
     def fit(self, fdata: FDataGrid):
-        '''
-        Returns the projection coefficients of sample functions fdata
-        '''
+        """
+        Compute the projection coefficients of sample functions.
+
+        Parameters
+        ----------
+        fdata : skfda.FDataGrid
+            Functional data to project.
+
+        Returns
+        -------
+        ndarray
+            Projection coefficients.
+        """
         self.domain_range = fdata.domain_range[0]
         self.grid_points = fdata.grid_points[0]
-        #center data
+        # Center data
         fdata = fdata - fdata.mean()
 
         if self.basis_type in ['fourier', 'ou', 'wavelet', 'bspline']:
@@ -270,12 +453,27 @@ class Projector():
         return self.coefficients
 
     def plot_basis(self, **kwargs):
+        """
+        Plot the projection basis functions.
+
+        Parameters
+        ----------
+        **kwargs
+            Additional keyword arguments passed to the plot function.
+        """
         self.basis.plot(group = range(1, len(self.basis)+1), **kwargs)
         plt.xlabel('t')
         plt.ylabel('$\\beta_v(t)$')
 
     def plot_projection_coeffs(self, **kwargs):
-        "plot univariate projection coefficients"
+        """
+        Plot the distribution of univariate projection coefficients.
+
+        Parameters
+        ----------
+        **kwargs
+            Additional keyword arguments passed to seaborn.histplot.
+        """
         if self.n_proj >= 4:
             fig, axes = plt.subplots(int(np.ceil(self.n_proj / 4)), 4, figsize=(15, 15))
         else:
