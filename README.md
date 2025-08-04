@@ -38,7 +38,7 @@ This quick start guide will demonstrate how to use the package with the [CBF](CB
 ```bash
 pip install GPmix
 ```
-This makes the library available in your Python environment. Once installed, prepare the CBF dataset:
+This makes the package available in your Python environment. Once installed, prepare the CBF dataset:
 
 ```python
 import numpy as np
@@ -251,4 +251,5 @@ estimate_nclusters(fdata, ncluster_grid = None)
 **This project is under active development. If you find a bug, or anything that needs correction, please let us know.** 
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
+
 
