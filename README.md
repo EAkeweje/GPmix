@@ -34,7 +34,11 @@ If you used this package in your research, please cite it:
 
 # 2. Code Example
 
-This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. Follow these steps to prepare the dataset for analysis:
+This quick start guide will demonstrate how to use the package with the [CBF](CBF) dataset, one of the real-world datasets tested in our paper. First, install the GPmix package from PyPI:
+```bash
+pip install GPmix
+```
+This makes the library available in your Python environment. Once installed, prepare the CBF dataset:
 
 ```python
 import numpy as np
@@ -247,3 +251,4 @@ estimate_nclusters(fdata, ncluster_grid = None)
 **This project is under active development. If you find a bug, or anything that needs correction, please let us know.** 
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
+
