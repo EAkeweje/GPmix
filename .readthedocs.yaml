@@ -6,13 +6,10 @@ build:
     python: "3.9"
 
 sphinx:
-  builder: html
   configuration: docs/source/conf.py
 
 python:
   install:
+    - method: pip
+      path: .
     - requirements: docs/requirements.txt
-    # - method: pip
-    #   path: .
-    #   extra_requirements:
-    #     - docs
