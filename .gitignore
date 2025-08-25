@@ -17,6 +17,7 @@ pip-wheel-metadata/
 .venv/
 venv/
 env/
+.rtdenv/
 
 # OS / IDE
 .DS_Store

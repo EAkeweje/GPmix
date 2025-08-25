@@ -20,15 +20,15 @@
 #         sys.modules[mod] = types.ModuleType(mod)
         
 # Safer version fetch (works on RTD even if deps aren’t built yet)
-from importlib.metadata import version, PackageNotFoundError
-project = "GPmix"
 try:
-    release = version("GPmix")
-except PackageNotFoundError:
+    from importlib.metadata import version as _pkg_version
+    release = _pkg_version("GPmix")            # full version like "0.1.3"
+except Exception:
     release = "0.0.0"
 
 project = "GPmix"
 author = "E. Akeweje"
+version = ".".join(release.split(".")[:2])   
 
 extensions = [
     "sphinx.ext.autodoc",
