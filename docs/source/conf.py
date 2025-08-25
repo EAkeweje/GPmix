@@ -1,12 +1,22 @@
-# docs/source/conf.py
-import os, sys
+import os
+import sys
+import types  # for hard mocks
 
-# Ensure 'import GPmix' works on Read the Docs and local builds
+# --- Make 'import GPmix' work on RTD & locally
 THIS_DIR = os.path.dirname(__file__)
 REPO_ROOT = os.path.abspath(os.path.join(THIS_DIR, "..", ".."))
 PKG_DIR = os.path.join(REPO_ROOT, "GPmix")
 sys.path.insert(0, REPO_ROOT)
 sys.path.insert(0, PKG_DIR)
+
+# --- Hard-mock heavy/optional deps so autosummary imports don't fail
+MOCK_MODULES = [
+    "numpy", "scipy", "matplotlib", "seaborn",
+    "sklearn", "skfda", "pywt", "joblib", "aeon",
+]
+for mod in MOCK_MODULES:
+    if mod not in sys.modules:
+        sys.modules[mod] = types.ModuleType(mod)
 
 # Safer version fetch (works on RTD even if deps aren’t built yet)
 try:
