@@ -34,12 +34,14 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    # optional but useful:
-    "sphinx.ext.intersphinx",
-] 
-
+    "sphinx_autodoc_typehints",
+    "myst_parser",
+]
 autosummary_generate = True
-autosummary_generate_overwrite = True
+
+# If imports are heavy, mock them so autodoc can import GPmix:
+autodoc_mock_imports = ["sklearn", "matplotlib", "PyWavelets", "skfda", "pandas"]
+
 autodoc_default_options = {
     "members": True,
     "undoc-members": False,
