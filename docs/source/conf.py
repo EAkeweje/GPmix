@@ -1,6 +1,12 @@
 # docs/source/conf.py
 import os, sys
-sys.path.insert(0, os.path.abspath("../.."))
+
+# Ensure 'import GPmix' works on Read the Docs and local builds
+THIS_DIR = os.path.dirname(__file__)
+REPO_ROOT = os.path.abspath(os.path.join(THIS_DIR, "..", ".."))
+PKG_DIR = os.path.join(REPO_ROOT, "GPmix")
+sys.path.insert(0, REPO_ROOT)
+sys.path.insert(0, PKG_DIR)
 
 # Safer version fetch (works on RTD even if deps aren’t built yet)
 try:
@@ -19,6 +25,11 @@ extensions = [
     "sphinx.ext.viewcode",
     # optional but useful:
     "sphinx.ext.intersphinx",
+]
+
+autodoc_mock_imports = [
+    "numpy", "scipy", "matplotlib", "seaborn",
+    "sklearn", "skfda", "pywt", "joblib", "aeon"
 ]
 
 autosummary_generate = True

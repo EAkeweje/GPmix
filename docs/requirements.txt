@@ -1,3 +1,4 @@
-sphinx>=6, <8
-sphinx-rtd-theme
+sphinx
+pydata-sphinx-theme
 myst-parser
+-e .
