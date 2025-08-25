@@ -6,8 +6,8 @@
    :toctree: .
    :recursive:
 
-   GPmix.smoother.Smoother
-   GPmix.projector.Projector
-   GPmix.unigmm.UniGaussianMixtureEnsemble
-   GPmix.unigmm.GaussianMixtureParameterEstimator
-   .. GPmix.misc
+   GPmix.Smoother
+   GPmix.Projector
+   GPmix.UniGaussianMixtureEnsemble
+   GPmix.GaussianMixtureParameterEstimator
+   GPmix.misc
