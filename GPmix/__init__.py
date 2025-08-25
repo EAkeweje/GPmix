@@ -6,7 +6,7 @@ The :mod:`GPmix` package provides implementation of the algorithm introduced in 
 from importlib.metadata import version, PackageNotFoundError
 
 try:
-    __version__ = version(__name__)
+    __version__ = version("GPmix")
 except PackageNotFoundError:
     # package isn’t installed in the environment; fallback:
     __version__ = "0.0.0"
