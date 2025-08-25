@@ -40,8 +40,8 @@ extensions = [
 ]
 autosummary_generate = True
 
-# If imports are heavy, mock them so autodoc can import GPmix:
-autodoc_mock_imports = ["sklearn", "matplotlib", "PyWavelets", "skfda", "pandas"]
+# # If imports are heavy, mock them so autodoc can import GPmix:
+# autodoc_mock_imports = ["sklearn", "matplotlib", "PyWavelets", "skfda", "pandas"]
 
 autodoc_default_options = {
     "members": True,
