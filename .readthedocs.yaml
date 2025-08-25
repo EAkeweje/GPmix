@@ -12,4 +12,4 @@ python:
   install:
     - requirements: docs/requirements.txt
     - method: pip
-      path: .                   # installs GPmix into RTD's venv
+    - path: .                   # installs GPmix into RTD's venv
