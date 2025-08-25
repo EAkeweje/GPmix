@@ -7,7 +7,7 @@ Welcome to GPmix
 
    getting-started
    quick-start
-   advanced-usage
+   .. advanced-usage
 
 .. .. toctree::
 ..    :maxdepth: 2
