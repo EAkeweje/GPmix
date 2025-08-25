@@ -1,4 +1,4 @@
 sphinx>=6,<8
-pydata-sphinx-theme
+sphinx_rtd_theme
 myst-parser
 GPmix
