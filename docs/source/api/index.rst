@@ -10,4 +10,4 @@
    GPmix.projector.Projector
    GPmix.unigmm.UniGaussianMixtureEnsemble
    GPmix.unigmm.GaussianMixtureParameterEstimator
-   GPmix.misc
+   .. GPmix.misc
