@@ -9,8 +9,8 @@ Welcome to GPmix
    quick-start
    advanced-usage
 
-.. toctree::
-   :maxdepth: 2
-   :caption: API Reference
+.. .. toctree::
+..    :maxdepth: 2
+..    :caption: API Reference
 
-   api/index
+..    api/index
