@@ -6,8 +6,8 @@ Welcome to GPmix
    :caption: User Guide
 
    getting-started
-   quick-start
-   .. advanced-usage
+..    quick-start
+..    advanced-usage
 
 .. .. toctree::
 ..    :maxdepth: 2
