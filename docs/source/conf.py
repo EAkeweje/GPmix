@@ -35,7 +35,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    "sphinx_autodoc_typehints",
+    # "sphinx_autodoc_typehints",
+    "sphinx.ext.intersphinx",
     "myst_parser",
 ]
 autosummary_generate = True
