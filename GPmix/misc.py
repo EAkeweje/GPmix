@@ -1,28 +1,3 @@
-"""
-misc.py
-
-This module provides utility functions for clustering and analyzing functional data, 
-including cluster number estimation, cluster evaluation metrics, Gaussian mixture plotting, 
-label matching, and representative sample selection.
-
-Functions:
-    - silhouette_score: Computes the silhouette score for clustering results.
-    - davies_bouldin_score: Computes the Davies-Bouldin score for clustering results.
-    - gmms_fit_plot_: Plots Gaussian mixture model density curves.
-    - match_labels: Permutes cluster labels to match specified true labels.
-    - estimate_nclusters: Estimates the optimal number of clusters in a functional dataset.
-    - hybrid_representative_selection: Selects representative samples using random sampling and KMeans clustering.
-
-Dependencies:
-    - numpy
-    - matplotlib
-    - sklearn
-    - skfda
-
-Author: Emmanuel Akeweje
-Date: August 2025
-"""
-
 import skfda
 from sklearn.mixture import GaussianMixture
 from skfda.preprocessing.dim_reduction import FPCA
@@ -129,7 +104,8 @@ def match_labels(cluster_labels, true_class_labels, cluster_class_labels_perm):
 
 def estimate_nclusters(fdata, ncluster_grid = None):
     """
-    Estimate the optimal number of clusters in a functional dataset using GMM and FPCA.
+    Employs a systematic search to identify the number of clusters that minimize the Akaike Information Criterion (AIC)
+    or the Bayesian Information Criterion (BIC).
 
     Parameters
     ----------

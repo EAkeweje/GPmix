@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+*.pyo
+
+# Build / packaging
+build/
+dist/
+.eggs/
+pip-wheel-metadata/
+*.whl
+
+# Virtual envs
+.env
+.venv/
+venv/
+env/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Sphinx docs build
+docs/_build/
+docs/build/
+docs/source/api/GPmix.*.rst

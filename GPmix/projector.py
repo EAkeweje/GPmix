@@ -85,17 +85,6 @@ class Projector():
     coefficients : ndarray of shape (n_proj, N)
         Projection coefficients for N samples.
 
-    Methods
-    -------
-    fit(fdata)
-        Compute projection coefficients for the given functional data.
-
-    plot_basis(**kwargs)
-        Plot the projection functions.
-
-    plot_projection_coeffs(**kwargs)
-        Visualize the distribution of projection coefficients.
-
     Notes
     -----
     The class supports orthogonalization of basis functions and can handle several types of bases.
@@ -465,23 +454,26 @@ class Projector():
         plt.xlabel('t')
         plt.ylabel('$\\beta_v(t)$')
 
-    def plot_projection_coeffs(self, **kwargs):
+    def plot_projection_coeffs(self, ncols=4, **kwargs):
         """
         Plot the distribution of univariate projection coefficients.
 
         Parameters
         ----------
+        ncols : int, optional
+            Number of columns in the subplot grid. Default is 4.
         **kwargs
             Additional keyword arguments passed to seaborn.histplot.
         """
-        if self.n_proj >= 4:
-            fig, axes = plt.subplots(int(np.ceil(self.n_proj / 4)), 4, figsize=(15, 15))
+        if self.n_proj >= ncols:
+            fig, axes = plt.subplots(int(np.ceil(self.n_proj / ncols)), ncols, figsize=(15, 15))
         else:
             fig, axes = plt.subplots(1, self.n_proj, figsize=(10, 5))
         axes = axes.ravel()
 
-        for coeffs, ax in zip(self.coefficients, axes):
+        for i, coeffs, ax in zip(range(len(self.coefficients)), self.coefficients, axes):
             sns.histplot(data=coeffs, stat='density', ax=ax, **kwargs)
-            ax.set(xlabel = 'projection coefficients')
+            label_ = 'alpha_{i' + str(i+1) + '}'
+            ax.set_xlabel(fr'$\{label_}$')
             
         fig.tight_layout()

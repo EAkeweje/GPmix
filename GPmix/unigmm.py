@@ -16,55 +16,60 @@ from .misc import gmms_fit_plot_, silhouette_score, davies_bouldin_score
 import warnings
 
 
+"""
+unigmm.py
+=========
+
+This module provides classes for estimating parameters of base univariate GMMs and also for formulating
+a consensus clustering from these GMMs. The main classes are:
+
+- GaussianMixtureParameterEstimator: Estimates parameters of a univariate GMM using the method of moments.
+- UniGaussianMixtureEnsemble: Constructs a consensus clustering using an ensemble of univariate
+"""
+
 class GaussianMixtureParameterEstimator():
     """
-    GaussianMixtureParameterEstimator
-    ---------------------------------
-    Estimate parameters of a univariate Gaussian mixture model (GMM) using the method of moments.
+    Estimate parameters of a univariate Gaussian mixture model (GMM) using the
+    method of moments.
 
-    This class provides a numerically stable implementation of the method of moments for univariate GMMs,
-    using the log-sum-exp trick for moment calculations. It supports flexible initialization, parameter constraints,
-    and normalization options.
+    This estimator implements a numerically stable method-of-moments approach
+    for univariate GMMs, using the log-sum-exp trick for moment calculations. It
+    supports flexible initialization, simple parameter constraints, and optional
+    normalization of the input data.
+
+    THIS IS STILL EXPERIMENTAL. USE WITH CAUTION.
 
     Parameters
     ----------
     n_comp : int
         Number of mixture components.
-    n_moments : int or None, optional (default=None)
-        Highest order of moment to consider. If None, defaults to 4 * n_comp - 2.
-    epsilon : float, optional (default=0.0)
-        Lower bound on mixture weights and constraints for means/variances. If set, also constrains means and variances for numerical stability.
+    n_moments : int or None, optional
+        Highest order of moment to consider. If ``None``, defaults to
+        ``4 * n_comp - 2``.
+    epsilon : float, optional
+        Lower bound on mixture weights and bounds for means/variances used to
+        improve numerical stability. If set to 0.0, no additional constraints
+        are applied.
 
     Attributes
     ----------
+    n_comp : int
+        Number of mixture components.
+    n_moments : int
+        Highest order of moment used during fitting.
+    epsilon : float
+        Lower bound/constraint strength used during fitting.
     init_guess_ : ndarray of shape (3 * n_comp,)
         Initial parameter guess in the order: weights, means, variances.
 
-    Methods
-    -------
-    log_sample_moments(data, order)
-        Compute the log of sample moments using the log-sum-exp trick.
-    log_theoretical_moments(parameters, order)
-        Compute the log of theoretical moments for a univariate Gaussian using the log-sum-exp trick.
-    log_theoretical_mixture_moments(parameters, order)
-        Compute the log of theoretical moments for a univariate Gaussian mixture using the log-sum-exp trick.
-    fit(data, normalize=True, full_output=False)
-        Fit the univariate GMM to data using method of moments estimation.
-
     Notes
     -----
-    - The method of moments is sensitive to initialization and moment order.
-    - The log-sum-exp trick is used for numerical stability.
-    - The fit method solves the system of moment equations via non-linear least squares.
-
-    Examples
-    --------
-    >>> estimator = GaussianMixtureParameterEstimator(n_comp=2)
-    >>> data = np.random.randn(100)
-    >>> params = estimator.fit(data)
+    The method of moments can be sensitive to both the choice of initialization
+    and the moment order. The solver minimizes a system of moment equations via
+    non-linear least squares. For stability, computed log-moments use the
+    log-sum-exp trick.
     """
-
-
+   
     def __init__(self, n_comp: int, n_moments: int or None = None, epsilon= 0.0) -> None:
         self.n_comp = n_comp
         self.epsilon = epsilon
@@ -84,7 +89,7 @@ class GaussianMixtureParameterEstimator():
     def log_theoretical_moments(self, parameters: np.ndarray or list, order: int) -> float:
         ''' Compute the log of theoretical moments of a univariate Gaussian using log-sum-exp trick
 
-        inputs
+        Attributes
         ------
         parameters : array-like of shape (2, )
             mean and variance of univatiate Gaussian, strictly this order: mean, variance
@@ -100,7 +105,7 @@ class GaussianMixtureParameterEstimator():
     def log_theoretical_mixture_moments(self, parameters: np.ndarray or list, order: int) -> float:
         ''' Compute the log of theoretical moments of a univariate Gaussian mixture using log-sum-exp trick
 
-        inputs
+        Attributes
         ------
         parameters : array-like of shape (3 * n_comp, )
             weights, means and variances of univatiate Gaussian, strictly this order: weights, means, variances
@@ -122,7 +127,7 @@ class GaussianMixtureParameterEstimator():
     def fit(self, data: np.ndarray, normalize: bool = True, full_output: bool = False):
         ''' Fit data to univariate GMM using method of moment estimation
         
-        inputs
+        Attributes
         ------
         data : array-like of shape (sample size,)
             Sample data.
@@ -192,26 +197,28 @@ class GaussianMixtureParameterEstimator():
 
 class UniGaussianMixtureEnsemble:
     """
-    UniGaussianMixtureEnsemble
-    --------------------------
     Consensus clustering using an ensemble of univariate Gaussian Mixture Models (GMMs).
 
-    This class fits univariate GMMs to multiple projections of the data, computes base clusterings,
-    and combines them into a consensus clustering using spectral clustering on an affinity matrix.
-    The affinity matrix is constructed from the binary membership matrices of the GMMs, weighted by
-    the inverse of their total misclassification probabilities.
+    This class fits univariate GMMs to multiple one-dimensional projections of the
+    data, computes base clusterings, and combines them into a consensus clustering
+    using spectral clustering on an affinity matrix built from binary membership
+    matrices. Base clusterings are weighted by an estimate of their total
+    misclassification probability.
 
     Parameters
     ----------
     n_clusters : int
-        The number of mixture components (clusters) to fit in each GMM and in the consensus clustering.
-    init_method : str, default='kmeans'
-        Initialization method for GMM parameters. Supported values:
-        'kmeans', 'k-means++', 'random', 'random_from_data', 'mom' (method of moments).
-    n_init : int, default=10
-        Number of initializations to perform for each GMM fit. The best result is kept.
-    mom_epsilon : float, default=5e-2
-        Lower bound for GMM weights when using 'mom' initialization. Ignored otherwise.
+        Number of mixture components (clusters) to fit in each GMM and in the
+        consensus clustering.
+    init_method : {"kmeans", "k-means++", "random", "random_from_data", "mom"}, optional
+        Initialization method for GMM parameters. Default is ``"kmeans"``.
+        The ``"mom"`` option uses method-of-moments initialization.
+    n_init : int, optional
+        Number of initializations to perform for each GMM fit. The best result is
+        kept. Default is ``10``.
+    mom_epsilon : float, optional
+        Lower bound for GMM weights (and related constraints) when using
+        ``init_method="mom"``. Ignored otherwise. Default is ``5e-2``.
 
     Attributes
     ----------
@@ -219,61 +226,25 @@ class UniGaussianMixtureEnsemble:
         Number of projections (base clusterings).
     data_size : int
         Number of samples in the data.
-    gmms : tuple
-        Tuple of fitted univariate GMMs.
+    gmms : tuple of sklearn.mixture.GaussianMixture
+        Fitted univariate GMMs for each projection.
     MoM_res : tuple
-        If 'init_method' is 'mom', tuple of method-of-moments solver results.
+        If ``init_method == 'mom'``, the method-of-moments solver results for each
+        projection.
     clustering_weights_ : ndarray of shape (n_projs,)
         Weights assigned to each base clustering.
     labels_ : ndarray of shape (n_samples,)
         Cluster labels assigned by the consensus clustering.
     max_cca_labels_ : tuple
-        Permutation of predicted labels that yields the highest classification accuracy.
+        Permutation of predicted labels that yields the highest classification
+        accuracy when compared to ground truth.
 
-    Methods
-    -------
-    gmm_with_MoM_inits(data)
-        Fit a univariate GMM to data using method-of-moments initialization.
-    fit_gmms(projs_coeffs, n_jobs=-1, **kwargs)
-        Fit univariate GMMs to each projection in parallel.
-    plot_gmms(ncol=4, fontsize=12, fig_kws={}, **kwargs)
-        Visualize the fitted GMMs and their densities.
-    fuzzy_membership_matrix()
-        Compute the fuzzy (soft) membership matrices from GMM fits.
-    binary_membership_matrix()
-        Compute binary (hard) membership indicator matrices from fuzzy memberships.
-    get_omega_prob(dist_a, dist_b)
-        Compute the misclassification probability between two univariate Gaussian components.
-    get_omega_map(weights, means, vars)
-        Construct the matrix of misclassification probabilities for a GMM.
-    get_total_omega(weights, means, vars, weighted_sum)
-        Compute the total misclassification probability for a GMM.
-    get_clustering_weights(weighted_sum, precompute_gmms=None)
-        Compute weights for each base clustering based on misclassification probabilities.
-    get_affinity_matrix(weighted_sum, precompute_gmms=None)
-        Construct the affinity matrix for consensus clustering.
-    get_clustering(weighted_sum=True, precompute_gmms=None, **kwargs)
-        Obtain consensus clustering labels via spectral clustering.
-    plot_clustering(fdata)
-        Plot the clustered data using the provided FDataGrid.
-    adjusted_mutual_info_score(true_labels)
-        Compute the Adjusted Mutual Information (AMI) score.
-    adjusted_rand_score(true_labels)
-        Compute the Adjusted Rand Index (ARI) score.
-    correct_classification_accuracy(true_labels)
-        Compute the best possible classification accuracy under label permutation.
-    silhouette_score(fdata)
-        Compute the silhouette score for the clustering.
-    davies_bouldin_score(fdata)
-        Compute the Davies-Bouldin score for the clustering.
-
-    Examples
-    --------
-    >>> ensemble = UniGaussianMixtureEnsemble(n_clusters=3, init_method='kmeans')
-    >>> ensemble.fit_gmms(projs_coeffs)
-    >>> labels = ensemble.get_clustering()
-    >>> ensemble.plot_gmms()
-    >>> ensemble.plot_clustering(fdata)
+    Notes
+    -----
+    The affinity matrix is constructed as a weighted sum of outer products of
+    binary membership matrices (one per projection), where the weights are
+    proportional to the inverse of each GMM's estimated total misclassification
+    probability.
     """
 
     def __init__(self, n_clusters: int, init_method: str = 'kmeans', n_init: int = 10, mom_epsilon: float = 5e-2) -> None:
@@ -374,8 +345,20 @@ class UniGaussianMixtureEnsemble:
     #     return np.sum([g.lower_bound_ for g in self.gmms])
 
 
-    def plot_gmms(self, ncol: int = 4, fontsize: int = 12, fig_kws = {}, **kwargs):
-        '''Visualize GMM fits'''
+    def plot_gmms(self, ncols: int = 4, fontsize: int = 12, fig_kws = {}, **kwargs):
+        '''Visualize GMM fits
+        
+        Parameters
+        ----------
+        ncols : int, optional
+            Number of columns in the plot grid. Default is 4.
+        fontsize : int, optional
+            Font size for axis labels. Default is 12.
+        fig_kws : dict, optional
+            Additional keyword arguments for figure creation. Default is an empty dict.
+        kwargs :  dict, optional
+            Additional keyword arguments for seaborn's histplot function. Default is an empty dict.
+        '''
         # create the figure and axes
         if self.n_projs == 1:
             fig, axes = plt.subplots(1, self.n_projs, **fig_kws)
@@ -384,7 +367,7 @@ class UniGaussianMixtureEnsemble:
             fig, axes = plt.subplots(1, self.n_projs, **fig_kws)
             axes = axes.ravel()  # flattening the array makes indexing easier
         else:
-            fig, axes = plt.subplots(int(np.ceil(self.n_projs / ncol)), ncol, **fig_kws)
+            fig, axes = plt.subplots(int(np.ceil(self.n_projs / ncols)), ncols, **fig_kws)
             axes = axes.ravel()  # flattening the array makes indexing easier
 
         # label_ = ['alpha_{i' + str(i) + '}' for i in range(1, self.n_projs + 1)]

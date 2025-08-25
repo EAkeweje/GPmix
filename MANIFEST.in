@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+include requirements.txt
+
+# If you have a data_configs folder under your package:
+recursive-include GPmix/data_configs *.json *.yaml
+
+# If you have top-level modules you want shipped:
+include simulations.py

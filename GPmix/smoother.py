@@ -67,11 +67,6 @@ class Smoother:
         The smoothed functional data object.
     grid_points : ndarray
         The grid points used for the functional data.
-
-    Methods
-    -------
-    fit(fd, return_data=True)
-        Fit the transformation to the input data and return the smoothed functional data.
     """
 
     def __init__(self, basis='bspline', basis_params={}, domain_range=None):
