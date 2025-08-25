@@ -8,6 +8,6 @@
 
    GPmix.Smoother
    GPmix.Projector
-   GPmix.UniGaussianMixtureEnsemble
-   GPmix.GaussianMixtureParameterEstimator
+   GPmix.unigmm.UniGaussianMixtureEnsemble
+   GPmix.unigmm.GaussianMixtureParameterEstimator
    GPmix.misc
