@@ -11,5 +11,5 @@ sphinx:
 python:
   install:
     - method: pip
-      path: GPmix
+      path: pyproject.toml
     - requirements: docs/requirements.txt
