@@ -20,10 +20,11 @@
 #         sys.modules[mod] = types.ModuleType(mod)
         
 # Safer version fetch (works on RTD even if deps aren’t built yet)
+from importlib.metadata import version, PackageNotFoundError
+project = "GPmix"
 try:
-    import importlib.metadata as importlib_metadata
-    release = importlib_metadata.version("GPmix")
-except Exception:
+    release = version("GPmix")
+except PackageNotFoundError:
     release = "0.0.0"
 
 project = "GPmix"

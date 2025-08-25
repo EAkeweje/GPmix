@@ -6,10 +6,10 @@ build:
     python: "3.9"
 
 sphinx:
-  configuration: docs/source/conf.py
+  configuration: GPmix/docs/source/conf.py  # adjust if your conf.py lives here
 
 python:
   install:
     - method: pip
-      path: .
-    - requirements: docs/requirements.txt
+      path: .                      # installs GPmix into RTD's venv
+    - requirements: GPmix/docs/requirements.txt
