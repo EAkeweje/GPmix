@@ -28,3 +28,5 @@ Thumbs.db
 docs/_build/
 docs/build/
 docs/source/api/GPmix.*.rst
+
+pyproject.toml
