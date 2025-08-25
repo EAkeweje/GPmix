@@ -14,11 +14,11 @@ except PackageNotFoundError:
 from .smoother import Smoother
 from .projector import Projector
 from .unigmm import UniGaussianMixtureEnsemble, GaussianMixtureParameterEstimator
-# from . import misc
+from . import misc
 
 
 __all__ = [
     "Smoother", "Projector",
     "GaussianMixtureParameterEstimator",
-    "UniGaussianMixtureEnsemble"#, "misc"
+    "UniGaussianMixtureEnsemble", "misc"
 ]
