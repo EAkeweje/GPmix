@@ -11,5 +11,6 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
+    - requirements: requirements.txt
     - method: pip
-    - path: .                   # installs GPmix into RTD's venv
+      path: .                   # installs GPmix into RTD's venv
