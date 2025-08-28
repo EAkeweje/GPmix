@@ -11,17 +11,21 @@ def load_requirements(fname="requirements.txt"):
     return reqs
 
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
+long_description = (this_directory / "pypi_readme.md").read_text()
 
 setup(
     name='GPmix',
-    version='0.1.3',
+    version='0.1.4',
     author='Emmanuel Akeweje and Mimi Zhang',
     author_email='eakeweje@tcd.ie',
     description='GPmix is an ensemble clustering algorithm for functional data via random projections.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/EAkeweje/GPmix',
+    project_urls={
+        "Documentation": "https://gpmix.readthedocs.io/en/latest/",
+        "Source": "https://github.com/EAkeweje/GPmix",
+        "Issues": "https://github.com/EAkeweje/GPmix/issues",
+    },
     packages=find_packages(exclude=["docs"]),
     install_requires=load_requirements(),
     license='MIT',

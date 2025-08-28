@@ -30,7 +30,5 @@ docs/_build/
 docs/build/
 docs/source/api/GPmix.*.rst
 
-# pyproject.toml
-# [build-system]
-# requires = ["setuptools>=61.0"]
-# build-backend = "setuptools.build_meta"
+pypi_readme.md
+pyproject.toml

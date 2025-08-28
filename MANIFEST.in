@@ -1,4 +1,4 @@
-include README.md
+include pypi_readme.md
 include LICENSE
 include requirements.txt
 
