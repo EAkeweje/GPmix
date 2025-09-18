@@ -15,7 +15,7 @@ long_description = (this_directory / "pypi_readme.md").read_text()
 
 setup(
     name='GPmix',
-    version='0.1.4',
+    version='0.1.6',
     author='Emmanuel Akeweje and Mimi Zhang',
     author_email='eakeweje@tcd.ie',
     description='GPmix is an ensemble clustering algorithm for functional data via random projections.',
