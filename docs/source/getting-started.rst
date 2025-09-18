@@ -42,7 +42,7 @@ Installation
 Contributing
 ------------
 
-Contributions are welcome! Fork the project on `GitHub <https://github.com/EAkeweje/GPmix.git>` and submit a pull request.
+Contributions are welcome! Fork the project on `GitHub <https://github.com/EAkeweje/GPmix.git>`_ and submit a pull request.
 
 Next Steps
 ----------
