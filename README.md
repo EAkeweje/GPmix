@@ -15,7 +15,7 @@ The main steps of the algorithm are:
  <li><strong>Ensemble</strong>: Extract a consensus clustering from the multiple GMMs.</li>
 </ul>
 
-If you used this package in your research, please cite it:
+If you used this package in your research, please cite our [paper](https://www.tara.tcd.ie/tara8/server/api/core/bitstreams/941f7675-aa86-43d0-9638-fc2ab0e45bfb/content):
 ```latex
 @InProceedings{pmlr-v235-akeweje24a,
   title = 	 {Learning Mixtures of {G}aussian Processes through Random Projection},
@@ -251,5 +251,6 @@ estimate_nclusters(fdata, ncluster_grid = None)
 **This project is under active development. If you find a bug, or anything that needs correction, please let us know.** 
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
+
 
 
